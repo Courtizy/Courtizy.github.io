@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jason C. Courtoy · Decision Models</title>
-  <meta name="description" content="Operations and sustainment leader building open decision models: turn-pattern simulation, project ROI and valuation.">
+  <meta name="description" content="Know the odds before you commit. Open decision models for operations, capital allocation and deals by Jason C. Courtoy.">
   <link rel="icon" type="image/svg+xml" href="brand/icons/core.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="brand/icons/core-32.png">
   <link rel="apple-touch-icon" href="brand/icons/core-180.png">
@@ -14,15 +14,16 @@
     try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
   <style>
+    /* The hub is the one page without a .hub-bar: every app page links back here. */
     .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
     .eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-secondary); }
 
     /* Top bar */
     .topbar { border-bottom: 1px solid var(--line); }
-    .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+    .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
     .topbar__name { font-weight: 700; text-decoration: none; color: var(--ink); }
-    .topbar nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; font-size: 0.9375rem; }
-    .topbar nav a { color: var(--ink-secondary); text-decoration: none; padding: 10px 0; }
+    .topbar nav { display: flex; align-items: center; gap: 4px 18px; font-size: 0.9375rem; }
+    .topbar nav a { color: var(--ink-secondary); text-decoration: none; padding: 12px 0; }
     .topbar nav a:hover { color: var(--ink); }
     .theme-toggle {
       min-width: 44px; min-height: 44px; display: inline-grid; place-items: center;
@@ -30,55 +31,57 @@
     }
     .theme-toggle:hover { color: var(--ink); border-color: var(--ink-secondary); }
 
-    /* Intro */
-    .intro { padding-block: 72px 56px; display: grid; gap: 20px; }
-    .intro h1 { margin: 0; font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.02em; }
-    .intro__headline { margin: 0; font-size: clamp(1.05rem, 2vw, 1.25rem); font-weight: 500; }
-    .intro__lede { margin: 0; max-width: 62ch; font-size: 1.0625rem; color: var(--ink-secondary); }
-    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    /* Hero: one claim, one line of context, two actions */
+    .hero { padding-block: 64px 40px; display: grid; gap: 18px; }
+    .hero h1 { margin: 0; max-width: 18ch; font-size: clamp(2.25rem, 5.5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.02em; }
+    .hero__who { margin: 0; font-size: clamp(1rem, 2vw, 1.125rem); color: var(--ink-secondary); }
+    .hero__who b { color: var(--ink); font-weight: 500; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
     .btn {
-      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px;
       border: 1px solid var(--line); background: var(--panel); color: var(--ink); text-decoration: none; font-weight: 500;
     }
     .btn:hover { border-color: var(--ink-secondary); color: var(--ink); }
+    .btn--primary { background: var(--ink); color: var(--page); border-color: var(--ink); }
+    .btn--primary:hover { color: var(--page); opacity: 0.9; }
     .btn svg { width: 18px; height: 18px; }
 
     /* Models */
     .section { padding-block: 40px; }
     .section h2 { margin: 6px 0 24px; font-size: 1.75rem; letter-spacing: -0.01em; }
-    .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-    .model { display: flex; flex-direction: column; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-top: 6px solid var(--brand-fill); padding: 24px; }
+    .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+    .model { display: flex; flex-direction: column; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-top: 6px solid var(--brand-fill); padding: 24px; min-width: 0; }
     .model__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .model h3 { margin: 0; font-size: 1.375rem; line-height: 1.2; }
     .model__q { margin: 0; font-weight: 500; }
     .model__desc { margin: 0; color: var(--ink-secondary); font-size: 0.9375rem; }
+    .model__note { margin: 0; color: var(--ink-secondary); font-size: 0.8125rem; }
     .model__links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 0.9375rem; }
     .model__links a { padding: 10px 0; font-weight: 500; }
-    .state { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--ink-secondary); white-space: nowrap; }
-    .state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-    .state--dev::before { background: transparent; border: 1.5px solid var(--ink-secondary); }
 
     .core { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 18px 24px; border: 2px solid var(--core-outline); }
     .core svg { width: 32px; height: 32px; flex-shrink: 0; }
     .core strong { font-size: 1.125rem; }
     .core__q { flex: 1 1 240px; color: var(--ink-secondary); }
 
-    /* Standards */
-    .standards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 0; margin: 0; list-style: none; }
-    .standards li { border-top: 1px solid var(--line); padding-top: 14px; }
-    .standards b { display: block; margin-bottom: 4px; }
-    .standards span { color: var(--ink-secondary); font-size: 0.9375rem; }
-    .note { margin-top: 20px; font-size: 0.875rem; color: var(--ink-secondary); }
+    /* About */
+    .about { display: grid; gap: 12px; justify-items: start; }
+    .about p { max-width: 68ch; }
+    .about p { margin: 0; color: var(--ink-secondary); }
+    .about p b { color: var(--ink); }
+
+    .site-footer { border-top: 1px solid var(--line); margin-top: 32px; }
+    .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 16px; padding-bottom: 24px; font-size: 0.75rem; color: var(--ink-secondary); }
+    .site-footer a { color: var(--ink-secondary); }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap">
       <a class="topbar__name" href="./">Jason C. Courtoy</a>
-      <nav aria-label="Main">
-        <a href="#models">Models</a>
-        <a href="#approach">Approach</a>
-        <a href="#contact">Contact</a>
+      <nav aria-label="Profiles">
+        <a href="https://www.linkedin.com/in/jasoncourtoy/">LinkedIn</a>
+        <a href="https://github.com/Courtizy">GitHub</a>
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch between dark and light mode">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
         </button>
@@ -87,28 +90,12 @@
   </header>
 
   <main>
-    <section class="wrap intro" id="contact">
-      <span class="eyebrow">Decision Models</span>
-      <h1>Jason C. Courtoy</h1>
-      <p class="intro__headline">Operations &amp; Sustainment Leader · Decision Analytics · Financial Modeling</p>
-      <p class="intro__lede">Aircraft, people and dollars are always scarcer than demand. I build open models that show where they should go, and how likely the plan is to hold: ranges and odds instead of a single number.</p>
-      <div class="links">
-        <a class="btn" href="https://www.linkedin.com/in/jasoncourtoy/">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
-          LinkedIn
-        </a>
-        <a class="btn" href="mailto:courtizy@gmail.com">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg>
-          Email
-        </a>
-        <a class="btn" href="resume/Jason-C-Courtoy-Resume.pdf">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg>
-          Résumé (PDF)
-        </a>
-        <a class="btn" href="https://github.com/Courtizy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 6l-2 12"/></svg>
-          GitHub
-        </a>
+    <section class="wrap hero">
+      <h1>Know the odds before you commit.</h1>
+      <p class="hero__who"><b>Jason C. Courtoy</b> · Open decision models for operations, capital allocation and deals.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="#models">See the models</a>
+        <a class="btn" href="https://www.linkedin.com/in/jasoncourtoy/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg> LinkedIn</a>
       </div>
     </section>
 
@@ -122,12 +109,12 @@
             <div class="brand-tile" aria-hidden="true">
               <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M52 32a20 20 0 1 1-6-14.3"/><path d="M48 8v10H38"/><circle cx="32" cy="32" r="4" fill="currentColor"/></svg>
             </div>
-            <span class="state">Live</span>
+            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
           </div>
           <span class="eyebrow">01 · Operations</span>
           <h3>Turn Pattern Sustainability</h3>
           <p class="model__q">Can the fleet meet the flying schedule?</p>
-          <p class="model__desc">Monte Carlo simulation of weekly aircraft turn patterns. Estimates the probability of meeting sortie and aircraft-availability requirements, with recovery modeling and a day-by-day breakdown.</p>
+          <p class="model__desc">Simulates thousands of weeks of a turn pattern to estimate the odds of meeting sortie and aircraft-availability requirements, with recovery modeling and a day-by-day breakdown. Runs in your browser.</p>
           <div class="model__links">
             <a href="https://courtizy.github.io/TPS-Monte-Carlo-Simulation/">Open the model</a>
             <a href="https://github.com/Courtizy/TPS-Monte-Carlo-Simulation">Code</a>
@@ -140,7 +127,7 @@
             <div class="brand-tile" aria-hidden="true">
               <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 52V40"/><path d="M26 52V30"/><path d="M40 52V22"/><path d="M10 26l14-10 10 6 18-12"/><path d="M44 10h8v8"/></svg>
             </div>
-            <span class="state state--dev">In development</span>
+            <span class="app-status"><span class="app-status__dot"></span>In development</span>
           </div>
           <span class="eyebrow">02 · Capital</span>
           <h3>Project ROI</h3>
@@ -153,12 +140,18 @@
             <div class="brand-tile" aria-hidden="true">
               <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg>
             </div>
-            <span class="state state--dev">In development</span>
+            <span class="app-status"><span class="app-status__dot"></span>In development</span>
           </div>
           <span class="eyebrow">03 · Deals</span>
           <h3>Valuation Model</h3>
           <p class="model__q">What is the business worth, and how sure are we?</p>
-          <p class="model__desc">Statement normalization from public SEC filings, then DCF, comparables and precedents, reconciled into valuation ranges rather than point estimates.</p>
+          <p class="model__desc">Values a company three ways from SEC filings and simulates the range: where the value really sits and what drives it.</p>
+          <p class="model__note">Analysis of method, not investment advice.</p>
+          <div class="model__links">
+            <a href="https://courtizy.github.io/valuation/">Open the model</a>
+            <a href="https://courtizy.github.io/valuation/?demo=1">Guided demo</a>
+            <a href="https://github.com/Courtizy/valuation">Code</a>
+          </div>
         </article>
       </div>
 
@@ -166,18 +159,23 @@
         <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></svg>
         <strong>Shared Core</strong>
         <span class="core__q">How likely is each outcome? One Monte Carlo engine behind every model.</span>
-        <span class="state state--dev">In development</span>
+        <span class="app-status"><span class="app-status__dot"></span>In development</span>
       </div>
     </section>
 
-    <section class="wrap section" id="approach">
-      <span class="eyebrow">Approach</span>
-      <h2 style="max-width: 32ch;">Decisions. Probabilities. Limits.</h2>
+    <section class="wrap section about" id="about">
+      <span class="eyebrow">About</span>
+      <p><b>Operations and sustainment leader.</b> I build these models in Python on personal time and publish them as static sites, so every number on a page traces back to the model.</p>
+      <p><b>Decisions. Probabilities. Limits.</b> Every model starts from one real question, shows the odds instead of a single number, and says what it can't tell you.</p>
+      <div class="actions"><a class="btn" href="https://www.linkedin.com/in/jasoncourtoy/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg> Connect on LinkedIn</a></div>
     </section>
   </main>
 
-  <footer class="brand-footer">
-    Personal portfolio. Views are my own. Public or synthetic data only; not endorsed by DoD or the U.S. Air Force.
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Personal portfolio. Views are my own. Public or synthetic data only; not endorsed by DoD or the U.S. Air Force. Personal-time data only; work data goes through official channels, never a repo.</span>
+      <a href="mailto:courtizy@gmail.com">Email</a>
+    </div>
   </footer>
 
   <script>
