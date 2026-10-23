@@ -51,6 +51,7 @@ code{font-size:.9em}
     <p>On iPhone, choose <b>Save Password</b> when asked, and Face ID fills it next time. Adding this page to your Home Screen (Share → Add to Home Screen) also keeps you signed in longer.</p>
     </div>
     <p id="msg" class="err" role="alert"></p>
+    <p><a href="demo.html">&larr; Back to the demo</a></p>
   </div>
 </div>
 <p id="loading" style="text-align:center;margin-top:20vh;color:var(--muted)">Loading…</p>
@@ -67,6 +68,8 @@ code{font-size:.9em}
   const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k) || ""; if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return ""; } };
   let tok = ls(KEY), ses = ls(SKEY);
   if (ses && +ses.split(".")[0] < Date.now() / 1000 + 60) { ses = ""; ls(SKEY, null); }
+  /* signed-out visitors land on the public demo; its Sign in bar comes back here with ?signin */
+  if (!ses && !tok && !/[?&]signin\b/.test(location.search)) { location.replace("demo.html"); return; }
   $("useTok").onclick = e => { e.preventDefault(); tokMode = true; ask(); };
   $("f").onsubmit = e => {
     e.preventDefault(); tok = $("tok").value.trim(); if (!tok) return;
