@@ -59,7 +59,7 @@ code{font-size:.9em}
   const REPO = "Courtizy/fitness", BRANCH = "main", KEY = "fitness-gh-token", SKEY = "fitness-session";
   /* Password sign-in goes through the Cloudflare relay (relay/worker.js), which holds the GitHub token.
      Empty means token-only. */
-  const RELAY = "";
+  const RELAY = "https://hae-inbox.jason-courtoy.workers.dev";
   const gate = document.getElementById("gate"), msg = document.getElementById("msg"), loading = document.getElementById("loading");
   const $ = id => document.getElementById(id);
   let tokMode = !RELAY;
