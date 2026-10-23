@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Fitness">
-<title>Fitness Command Center</title>
+<meta name="apple-mobile-web-app-title" content="Delta">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Delta Readiness</title>
 <style>
-/* Loader for the private Fitness Command Center. This public page holds no data and no app code:
+/* Loader for the private Delta Readiness app. This public page holds no data and no app code:
    it asks for a GitHub token, fetches the app from the private Courtizy/fitness repo, and gives it
    a storage layer backed by that repo's data/*.json files. */
 :root{--bg:#F7F8FA;--panel:#FFFFFF;--ink:#111A24;--muted:#4A5866;--rule:#D5DAE0;--brand:#1A7FA0;--crit:#B42A2A}
@@ -28,7 +30,7 @@ code{font-size:.9em}
 <body>
 <div class="gate" id="gate" hidden>
   <div class="card">
-    <h1>Fitness Command Center</h1>
+    <h1>Delta Readiness</h1>
     <div id="pwBox" hidden>
     <p>This page is private. Enter your dashboard password.</p>
     <form id="pf" action="#" method="post"><input name="username" type="text" autocomplete="username" value="fitness-dashboard" readonly hidden><input id="pw" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password"><button type="submit">Open dashboard</button></form>
@@ -96,7 +98,7 @@ code{font-size:.9em}
       const shim = `<script>(${storage.toString()})(${JSON.stringify({ BRANCH, BASE, AUTH })});<\/script>`;
       /* app/index.html is page content (as published to claude.ai), so it gets the same document skeleton here */
       const page = /^\s*<!doctype/i.test(app) ? app.replace(/<body[^>]*>/i, m => m + shim)
-        : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><style>body{margin:0}[hidden]{display:none!important}</style></head><body>${shim}${app}</body></html>`;
+        : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Delta"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="favicon.png"><style>body{margin:0}[hidden]{display:none!important}</style></head><body>${shim}${app}</body></html>`;
       document.open(); document.write(page); document.close();
     } catch (e) { ask("Couldn't reach GitHub. Check the connection and try again."); }
   }
