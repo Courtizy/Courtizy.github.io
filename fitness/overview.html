@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" data-app="delta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Delta Readiness · Jason C. Courtoy</title>
+<meta name="description" content="Am I ready for the PT test? Daily readiness from your own watch data, and a USAF PT score projected to test day.">
+<meta name="apple-mobile-web-app-title" content="Delta">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="frame.css">
+<script src="frame.js" data-page="overview" data-mode="public"></script>
+<style>
+body{margin:0;background:var(--dz-bg);color:var(--dz-ink);font:16px/1.55 var(--dz-body);
+  background-image:linear-gradient(var(--dz-grid) 1px,transparent 1px),linear-gradient(90deg,var(--dz-grid) 1px,transparent 1px);background-size:28px 28px;background-attachment:fixed}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+main{padding-block:28px 8px}
+.lbl{font:600 .7rem var(--dz-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dz-tan)}
+h2{font:700 2.1rem/1.05 var(--dz-display);letter-spacing:.03em;text-transform:uppercase;margin:0;text-wrap:balance}
+h3{font:700 1.15rem/1.2 var(--dz-display);letter-spacing:.05em;text-transform:uppercase;margin:0 0 8px}
+p{margin:0 0 10px;max-width:66ch}
+a{color:var(--dz-accent)}
+.mono{font-family:var(--dz-mono)}
+.card{position:relative;background:var(--dz-panel);border:1px solid var(--dz-rule);border-radius:6px;padding:20px}
+.card::before{content:"";position:absolute;left:-1px;top:-1px;width:14px;height:14px;border-left:2px solid var(--dz-accent);border-top:2px solid var(--dz-accent);border-top-left-radius:6px}
+.stack{display:grid;gap:28px}
+.hero{display:flex;flex-wrap:wrap;gap:28px;align-items:stretch}
+.lead{flex:999 1 460px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.lead h2{font-size:clamp(2rem,5vw,2.9rem)}
+.lead p{font-size:1.06rem;color:var(--dz-ink)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.answer{flex:1 1 300px;display:grid;gap:14px;align-content:start;min-width:0}
+.answer .row{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;border-top:1px solid var(--dz-rule);padding-top:10px}
+.answer .row:first-of-type{border-top:0;padding-top:0}
+.answer b{font:700 1.5rem/1 var(--dz-mono);color:var(--dz-accent);text-shadow:var(--dz-glow)}
+.answer span{font-size:.92rem;color:var(--dz-muted)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.step{border-top:2px solid var(--dz-accent);padding-top:12px;display:grid;gap:6px;align-content:start}
+.step .n{font:600 .76rem var(--dz-mono);color:var(--dz-accent)}
+.step b{font:700 1.1rem var(--dz-display);letter-spacing:.05em;text-transform:uppercase}
+.step span{font-size:.94rem;color:var(--dz-muted)}
+.pair{display:flex;flex-wrap:wrap;gap:16px}
+.pair>.card{flex:1 1 340px;min-width:0}
+ul{margin:0;padding-left:18px}
+li{margin:0 0 6px}
+.muted{color:var(--dz-muted)}
+/* method */
+.mnav{display:flex;flex-wrap:wrap;gap:6px}
+.mnav a{font:600 .68rem var(--dz-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--dz-ink);border:1px solid var(--dz-rule);border-radius:4px;padding:8px 10px;min-height:36px;display:inline-flex;align-items:center}
+.mnav a:hover{border-color:var(--dz-accent)}
+section.msec{scroll-margin-top:16px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--dz-rule);vertical-align:top}
+th{font:600 .66rem var(--dz-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dz-tan)}
+td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;gap:10px;align-items:baseline}
+.pill{flex:none;font:600 .62rem var(--dz-mono);letter-spacing:.08em;text-transform:uppercase;border:1px solid currentColor;border-radius:3px;padding:2px 6px}
+.pill.done{color:var(--dz-accent)}
+.pill.plan{color:var(--dz-tan)}
+</style>
+</head>
+<body>
+<main class="dz-in">
+
+<div id="p-overview" class="stack">
+  <div class="hero">
+    <div class="lead">
+      <span class="lbl">04 · Readiness</span>
+      <h2>Know your PT score before test day.</h2>
+      <p>Delta Readiness reads the data your watch and training apps already collect and answers two questions every morning: is today a day to push, and what would you score if the test were today, or on your test date at your current trend.</p>
+      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See results</a><a class="dz-btn" href="#method">How it works</a></div>
+    </div>
+    <div class="card answer" aria-label="What it tells you">
+      <span class="lbl">What you get each morning</span>
+      <div class="row"><b>0–100</b><span>Readiness against your own last 3 weeks, with the weakest signal named.</span></div>
+      <div class="row"><b>/ 100</b><span>PT score by component: cardio, waist-to-height, strength and core, today and projected to test day.</span></div>
+      <div class="row"><b>2-mile</b><span>Run time estimated from your recent runs or a logged time trial, and where your trend lands it.</span></div>
+    </div>
+  </div>
+
+  <div class="stack" style="gap:14px">
+    <span class="lbl">How it works</span>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><b>Collect</b><span>Apple Health (HRV, resting heart rate, sleep, breathing rate, wrist temperature, weight), Strava runs, Liftosaur lifts and MacroFactor nutrition sync into a private store.</span></div>
+      <div class="step"><span class="n">02</span><b>Compare to you</b><span>Each signal is scored against your own last 21 days, not a population average, then weighted into one readiness number.</span></div>
+      <div class="step"><span class="n">03</span><b>Project to test day</b><span>Your run trend, waist and logged push-up and core results go through the USAF PFRA scoring tables to give a score per component and overall.</span></div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div class="card"><h3>What it can't tell you</h3><ul>
+      <li>It is not a medical device or a diagnosis. Feeling ill or hurt outranks any score.</li>
+      <li>Points between each event's minimum and maximum are estimated in a straight line; the official charts step by rep and second.</li>
+      <li>The readiness weights are reasoned, not yet tested against your own results. That check is planned (see Method).</li>
+      <li>A projection assumes your recent trend continues. A missed month of running changes it.</li>
+    </ul></div>
+    <div class="card"><h3>Built on</h3><ul>
+      <li>One HTML and JavaScript app, the same file on the phone and the desktop.</li>
+      <li>Apple Health through Health Auto Export, Strava, Liftosaur and MacroFactor exports.</li>
+      <li>Personal data in a private GitHub repository, reached through a password-protected Cloudflare Worker.</li>
+      <li>PT scoring from DAFMAN 36-2905 (PFRA, March 2026).</li>
+    </ul></div>
+  </div>
+</div>
+
+<div id="p-method" class="stack" hidden>
+  <div class="stack" style="gap:12px">
+    <span class="lbl">Method</span>
+    <h2>How the numbers are built</h2>
+    <nav class="mnav" aria-label="Method sections"><a href="#m-problem">Problem</a><a href="#m-inputs">Inputs and sources</a><a href="#m-model">The model</a><a href="#m-validation">Validation</a><a href="#m-limits">Limits</a><a href="#m-changelog">Changelog</a></nav>
+  </div>
+
+  <section class="card msec" id="m-problem"><h3>Problem</h3>
+    <p>The PT test is one morning, but readiness for it is built over months. Watch data, run logs, lifting logs and nutrition sit in four apps that never talk to each other, so it's hard to tell whether today is a day to push and whether the trend will get you to the score you want by test day.</p>
+  </section>
+
+  <section class="card msec" id="m-inputs"><h3>Inputs and sources</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Input</th><th>Source</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td>Heart rate variability</td><td>Apple Health via Health Auto Export</td><td>Readiness, 30%</td></tr>
+        <tr><td>Sleep hours</td><td>Apple Health</td><td>Readiness, 25%</td></tr>
+        <tr><td>Resting heart rate</td><td>Apple Health</td><td>Readiness, 20%</td></tr>
+        <tr><td>Training load (lifting minutes plus cardio minutes)</td><td>Liftosaur and Strava</td><td>Readiness, 15%</td></tr>
+        <tr><td>Breathing rate, wrist temperature</td><td>Apple Health</td><td>Readiness, 5% each</td></tr>
+        <tr><td>Runs (distance and time)</td><td>Strava</td><td>2-mile estimate and trend</td></tr>
+        <tr><td>Waist and height</td><td>Tape log, Apple Health</td><td>Waist-to-height points</td></tr>
+        <tr><td>Push-ups, hand-release push-ups, sit-ups, crunches, plank</td><td>Results you log in the app</td><td>Strength and core points</td></tr>
+        <tr><td>Weight, intake, protein</td><td>MacroFactor</td><td>Trend weight and nutrition cards</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="card msec" id="m-model"><h3>The model</h3>
+    <p><b>Readiness.</b> Each contributor is turned into a 0–100 score from how far today's reading sits from your own last 21 days (a z-score): higher is better for HRV, lower for resting heart rate and breathing rate, and close to normal for wrist temperature. Sleep is scored against 7.5 hours, and training load against the ratio of your last 7 days to your last 28 (0.8 to 1.3 times is ideal). Missing contributors are left out and the rest re-weighted; the score needs HRV or resting heart rate plus one more. Bands: 85 and up Ready to push, 70 Good to go, 55 Keep it controlled, below that Recover today.</p>
+    <p><b>PT score.</b> USAF PFRA components: cardio 50 points, waist-to-height 20, strength 15, core 15. Each event's points run from the chart minimum to the maximum for your sex and age group; waist-to-height uses its step table. 75 passes and 90 is Excellent; missing any component minimum fails the test.</p>
+    <p><b>2-mile.</b> A logged time trial in the last 8 weeks wins. Otherwise the best three runs of 1.55 miles or more are converted to a 2-mile time with Riegel's formula (T₂ = T₁ × (2 / d₁)<sup>1.06</sup>), and a straight-line trend over the last 10 weeks carries it to test day.</p>
+  </section>
+
+  <section class="card msec" id="m-validation"><h3>Validation</h3>
+    <ul class="chk">
+            <li><span class="pill done">Done</span><span>The app's 2-mile estimate matches the detailed dashboard's own estimate on the same data.</span></li>
+      <li><span class="pill plan">Planned</span><span>Back-test readiness: do higher-readiness mornings come before better sessions (top-set strength and run pace)? Refit the weights to the result.</span></li>
+      <li><span class="pill plan">Planned</span><span>Check every event against the official AFPC charts, rep by rep and second by second, and replace the straight-line points with the chart steps.</span></li>
+      <li><span class="pill plan">Planned</span><span>Compare past 2-mile projections with the time trials that followed, and show the error as a range.</span></li>
+    </ul>
+  </section>
+
+  <section class="card msec" id="m-limits"><h3>Limits</h3>
+    <ul>
+      <li>Readiness is an estimate built from your own data, not a medical measure.</li>
+      <li>The first week has no baseline, so readiness stays blank until enough days sync.</li>
+      <li>Data from manual exports (Liftosaur, MacroFactor) is only as fresh as the last export.</li>
+      <li>Linear points between chart minimum and maximum can differ from the official chart by a point or two.</li>
+    </ul>
+  </section>
+
+  <section class="card msec" id="m-changelog"><h3>Changelog</h3>
+    <ul>
+      <li><span class="mono">2026-10-23</span> Joined the Decision Models frame, with a public Overview, Method and demo.</li>
+      <li><span class="mono">2026-10-23</span> Renamed Delta Readiness, with the tactical HUD theme.</li>
+      <li><span class="mono">2026-10-23</span> Added the USAF PT test calculator with a test-day projection.</li>
+    </ul>
+  </section>
+</div>
+
+</main>
+<script>
+(() => {
+  const ov = document.getElementById("p-overview"), me = document.getElementById("p-method");
+  let signed = false; try { signed = !!(localStorage.getItem("fitness-session") || localStorage.getItem("fitness-gh-token")); } catch (e) {}
+  if (signed) document.getElementById("seeRes").href = "./";
+  const show = () => {
+    const h = location.hash.slice(1), m = h === "method" || h.startsWith("m-");
+    ov.hidden = m; me.hidden = !m;
+    document.querySelectorAll(".dz-tabs a").forEach(a => {
+      const k = /#method$/.test(a.getAttribute("href")) ? "method" : /overview\.html$/.test(a.getAttribute("href")) ? "overview" : "results";
+      if (k === (m ? "method" : "overview")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (h && h !== "method") { const t = document.getElementById(h); if (t) t.scrollIntoView(); } else scrollTo(0, 0);
+  };
+  addEventListener("hashchange", show);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show); else show();
+})();
+</script>
+</body>
+</html>
