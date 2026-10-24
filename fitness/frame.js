@@ -24,8 +24,8 @@
   <div class="dz-right"><span class="dz-status"><i></i>Live</span><div class="dz-acts">${theme}${act}</div></div>
 </div></header>
 <nav class="dz-tabbar" aria-label="Pages"><div class="dz-in dz-tabs">${tab("overview", base + "overview.html", "Overview")}${tab("results", results, "Results")}${tab("method", base + "overview.html#method", "Method")}</div></nav>
-${mode === "demo" ? `<div class="dz-strip"><div class="dz-in"><span class="dz-tag">Demo</span><span>Made-up data and generic program names, run through the real app. Nothing you change is saved.</span></div></div>` : ""}`;
-  const foot = `<footer class="dz-foot"><div class="dz-in"><p>Personal project · public or synthetic data only · not medical advice · not endorsed by DoD or the U.S. Air Force</p><p>PT scoring follows DAFMAN 36-2905 (PFRA, March 2026). Readiness is an estimate built from your own data.</p></div></footer>`;
+${mode === "demo" ? `<div class="dz-strip"><div class="dz-in"><span class="dz-tag">Demo</span><span>Sample data. Explore freely; nothing is saved.</span></div></div>` : ""}`;
+  const foot = `<footer class="dz-foot"><div class="dz-in"><p>Personal project · public or synthetic data only · not medical advice · not endorsed by DoD or the U.S. Air Force</p><p>PT scoring per DAFMAN 36-2905 (PFRA, March 2026).</p></div></footer>`;
   const mount = () => {
     if (document.querySelector(".dz-head")) return;
     document.body.insertAdjacentHTML("afterbegin", top);

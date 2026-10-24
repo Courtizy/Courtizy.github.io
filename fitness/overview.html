@@ -71,38 +71,37 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
     <div class="lead">
       <span class="lbl">04 · Readiness</span>
       <h2>Know your PT score before test day.</h2>
-      <p>Delta Readiness reads the data your watch and training apps already collect and answers two questions every morning: is today a day to push, and what would you score if the test were today, or on your test date at your current trend.</p>
+      <p>Your watch already tracks how you slept and recovered. Delta Readiness turns it into a daily call (push or back off) and a running projection of your PT score.</p>
       <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See results</a><a class="dz-btn" href="#method">How it works</a></div>
     </div>
     <div class="card answer" aria-label="What it tells you">
-      <span class="lbl">What you get each morning</span>
-      <div class="row"><b>0–100</b><span>Readiness against your own last 3 weeks, with the weakest signal named.</span></div>
-      <div class="row"><b>/ 100</b><span>PT score by component: cardio, waist-to-height, strength and core, today and projected to test day.</span></div>
-      <div class="row"><b>2-mile</b><span>Run time estimated from your recent runs or a logged time trial, and where your trend lands it.</span></div>
+      <span class="lbl">Every morning</span>
+      <div class="row"><b>0–100</b><span>Readiness against your own baseline.</span></div>
+      <div class="row"><b>/ 100</b><span>PT score today and on test day.</span></div>
+      <div class="row"><b>2-mile</b><span>Projected run time from your recent runs.</span></div>
     </div>
   </div>
 
   <div class="stack" style="gap:14px">
     <span class="lbl">How it works</span>
     <div class="steps">
-      <div class="step"><span class="n">01</span><b>Collect</b><span>Apple Health (HRV, resting heart rate, sleep, breathing rate, wrist temperature, weight), Strava runs, Liftosaur lifts and MacroFactor nutrition sync into a private store.</span></div>
-      <div class="step"><span class="n">02</span><b>Compare to you</b><span>Each signal is scored against your own last 21 days, not a population average, then weighted into one readiness number.</span></div>
-      <div class="step"><span class="n">03</span><b>Project to test day</b><span>Your run trend, waist and logged push-up and core results go through the USAF PFRA scoring tables to give a score per component and overall.</span></div>
+      <div class="step"><span class="n">01</span><b>Sync</b><span>Apple Health, Strava, Liftosaur and MacroFactor in one place.</span></div>
+      <div class="step"><span class="n">02</span><b>Score</b><span>Each signal measured against your last 21 days, not a population average.</span></div>
+      <div class="step"><span class="n">03</span><b>Project</b><span>Your trends run through the official PFRA scoring tables.</span></div>
     </div>
   </div>
 
   <div class="pair">
     <div class="card"><h3>What it can't tell you</h3><ul>
-      <li>It is not a medical device or a diagnosis. Feeling ill or hurt outranks any score.</li>
-      <li>Points between each event's minimum and maximum are estimated in a straight line; the official charts step by rep and second.</li>
-      <li>The readiness weights are reasoned, not yet tested against your own results. That check is planned (see Method).</li>
-      <li>A projection assumes your recent trend continues. A missed month of running changes it.</li>
+      <li>It's not medical advice. Sick or hurt beats any score.</li>
+      <li>Points between chart steps are estimated, so allow about one either way.</li>
+      <li>Projections assume your current trend holds.</li>
     </ul></div>
     <div class="card"><h3>Built on</h3><ul>
-      <li>One HTML and JavaScript app, the same file on the phone and the desktop.</li>
-      <li>Apple Health through Health Auto Export, Strava, Liftosaur and MacroFactor exports.</li>
-      <li>Personal data in a private GitHub repository, reached through a password-protected Cloudflare Worker.</li>
-      <li>PT scoring from DAFMAN 36-2905 (PFRA, March 2026).</li>
+      <li>One web app for phone and desktop.</li>
+      <li>Apple Health, Strava, Liftosaur and MacroFactor.</li>
+      <li>Private data behind a password.</li>
+      <li>PFRA scoring from DAFMAN 36-2905 (March 2026).</li>
     </ul></div>
   </div>
 </div>
@@ -115,52 +114,52 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
   </div>
 
   <section class="card msec" id="m-problem"><h3>Problem</h3>
-    <p>The PT test is one morning, but readiness for it is built over months. Watch data, run logs, lifting logs and nutrition sit in four apps that never talk to each other, so it's hard to tell whether today is a day to push and whether the trend will get you to the score you want by test day.</p>
+    <p>The test is one morning; readiness for it takes months, spread across four apps that don't talk. Delta pulls them together to answer two questions: push today, and are you on track?</p>
   </section>
 
   <section class="card msec" id="m-inputs"><h3>Inputs and sources</h3>
     <div class="tw"><table>
       <thead><tr><th>Input</th><th>Source</th><th>Used for</th></tr></thead>
       <tbody>
-        <tr><td>Heart rate variability</td><td>Apple Health via Health Auto Export</td><td>Readiness, 30%</td></tr>
-        <tr><td>Sleep hours</td><td>Apple Health</td><td>Readiness, 25%</td></tr>
+        <tr><td>HRV</td><td>Apple Health</td><td>Readiness, 30%</td></tr>
+        <tr><td>Sleep</td><td>Apple Health</td><td>Readiness, 25%</td></tr>
         <tr><td>Resting heart rate</td><td>Apple Health</td><td>Readiness, 20%</td></tr>
-        <tr><td>Training load (lifting minutes plus cardio minutes)</td><td>Liftosaur and Strava</td><td>Readiness, 15%</td></tr>
-        <tr><td>Breathing rate, wrist temperature</td><td>Apple Health</td><td>Readiness, 5% each</td></tr>
-        <tr><td>Runs (distance and time)</td><td>Strava</td><td>2-mile estimate and trend</td></tr>
-        <tr><td>Waist and height</td><td>Tape log, Apple Health</td><td>Waist-to-height points</td></tr>
-        <tr><td>Push-ups, hand-release push-ups, sit-ups, crunches, plank</td><td>Results you log in the app</td><td>Strength and core points</td></tr>
-        <tr><td>Weight, intake, protein</td><td>MacroFactor</td><td>Trend weight and nutrition cards</td></tr>
+        <tr><td>Training load</td><td>Liftosaur, Strava</td><td>Readiness, 15%</td></tr>
+        <tr><td>Breathing rate, wrist temp</td><td>Apple Health</td><td>Readiness, 5% each</td></tr>
+        <tr><td>Runs</td><td>Strava</td><td>2-mile projection</td></tr>
+        <tr><td>Waist, height</td><td>Tape log</td><td>Waist-to-height points</td></tr>
+        <tr><td>Push-ups, core events</td><td>Your logged results</td><td>Strength and core points</td></tr>
+        <tr><td>Weight, intake</td><td>MacroFactor</td><td>Nutrition and trend weight</td></tr>
       </tbody>
     </table></div>
   </section>
 
   <section class="card msec" id="m-model"><h3>The model</h3>
-    <p><b>Readiness.</b> Each contributor is turned into a 0–100 score from how far today's reading sits from your own last 21 days (a z-score): higher is better for HRV, lower for resting heart rate and breathing rate, and close to normal for wrist temperature. Sleep is scored against 7.5 hours, and training load against the ratio of your last 7 days to your last 28 (0.8 to 1.3 times is ideal). Missing contributors are left out and the rest re-weighted; the score needs HRV or resting heart rate plus one more. Bands: 85 and up Ready to push, 70 Good to go, 55 Keep it controlled, below that Recover today.</p>
-    <p><b>PT score.</b> USAF PFRA components: cardio 50 points, waist-to-height 20, strength 15, core 15. Each event's points run from the chart minimum to the maximum for your sex and age group; waist-to-height uses its step table. 75 passes and 90 is Excellent; missing any component minimum fails the test.</p>
-    <p><b>2-mile.</b> A logged time trial in the last 8 weeks wins. Otherwise the best three runs of 1.55 miles or more are converted to a 2-mile time with Riegel's formula (T₂ = T₁ × (2 / d₁)<sup>1.06</sup>), and a straight-line trend over the last 10 weeks carries it to test day.</p>
+    <p><b>Readiness.</b> Each signal is compared with your last 21 days, scored 0–100 and weighted as above. Missing signals drop out. 85+ Ready to push, 70+ Good to go, 55+ Keep it controlled, below that Recover today.</p>
+    <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scaled from each event's minimum to maximum for your age and sex. 75 passes, 90 is Excellent, and any missed minimum fails.</p>
+    <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula and carried along your 10-week trend.</p>
   </section>
 
   <section class="card msec" id="m-validation"><h3>Validation</h3>
     <ul class="chk">
-            <li><span class="pill done">Done</span><span>The app's 2-mile estimate matches the detailed dashboard's own estimate on the same data.</span></li>
-      <li><span class="pill plan">Planned</span><span>Back-test readiness: do higher-readiness mornings come before better sessions (top-set strength and run pace)? Refit the weights to the result.</span></li>
-      <li><span class="pill plan">Planned</span><span>Check every event against the official AFPC charts, rep by rep and second by second, and replace the straight-line points with the chart steps.</span></li>
-      <li><span class="pill plan">Planned</span><span>Compare past 2-mile projections with the time trials that followed, and show the error as a range.</span></li>
+      <li><span class="pill done">Done</span><span>2-mile estimate matches the detailed dashboard on the same data.</span></li>
+      <li><span class="pill plan">Planned</span><span>Test readiness against session results and refit the weights.</span></li>
+      <li><span class="pill plan">Planned</span><span>Check every event against the official charts, step by step.</span></li>
+      <li><span class="pill plan">Planned</span><span>Score past 2-mile projections against the time trials that followed.</span></li>
     </ul>
   </section>
 
   <section class="card msec" id="m-limits"><h3>Limits</h3>
     <ul>
-      <li>Readiness is an estimate built from your own data, not a medical measure.</li>
-      <li>The first week has no baseline, so readiness stays blank until enough days sync.</li>
-      <li>Data from manual exports (Liftosaur, MacroFactor) is only as fresh as the last export.</li>
-      <li>Linear points between chart minimum and maximum can differ from the official chart by a point or two.</li>
+      <li>An estimate from your data, not a medical reading.</li>
+      <li>Readiness needs about a week of data to start.</li>
+      <li>Lifting and nutrition are only as fresh as the last export.</li>
     </ul>
   </section>
 
   <section class="card msec" id="m-changelog"><h3>Changelog</h3>
     <ul>
+      <li><span class="mono">2026-10-24</span> Tighter copy across the app and these pages.</li>
       <li><span class="mono">2026-10-23</span> Joined the Decision Models frame, with a public Overview, Method and demo.</li>
       <li><span class="mono">2026-10-23</span> Renamed Delta Readiness, with the tactical HUD theme.</li>
       <li><span class="mono">2026-10-23</span> Added the USAF PT test calculator with a test-day projection.</li>
