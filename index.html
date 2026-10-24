@@ -39,7 +39,7 @@
     .hero p { margin: 0; font-size: clamp(1rem, 2vw, 1.125rem); color: var(--ink-secondary); }
 
     .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
-    /* Delta Readiness is a personal app, not one of the brand's three models, so its colors live here rather than in brand.css */
+    /* Delta Readiness is a side project, not one of the brand's three models, so its colors live here rather than in brand.css */
     [data-app="delta"] { --brand-fill: #2F6B3F; --accent: #46C27F; }
     @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) [data-app="delta"] { --accent: #1F7A45; } }
     :root[data-theme="light"] [data-app="delta"] { --accent: #1F7A45; }
@@ -62,6 +62,15 @@
     .core { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 20px; border: 2px solid var(--core-outline); }
     .core svg { width: 26px; height: 26px; flex-shrink: 0; }
     .core__q { flex: 1 1 240px; color: var(--ink-secondary); }
+
+    /* Side project: one quiet line under the core, not a fourth model */
+    .side { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 8px 20px; min-height: 44px; border: 1px solid var(--line); border-left: 4px solid var(--brand-fill); color: var(--ink); text-decoration: none; }
+    .side:hover { border-color: var(--ink-secondary); border-left-color: var(--brand-fill); }
+    .side:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .side__tile { display: inline-grid; place-items: center; width: 28px; height: 28px; background: var(--brand-fill); color: #fff; }
+    .side__tile svg { width: 16px; height: 16px; }
+    .side__q { flex: 1 1 200px; color: var(--ink-secondary); }
+    .side__go { font-weight: 500; color: var(--accent); }
 
     .site-footer { border-top: 1px solid var(--line); }
     .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; padding-top: 12px; padding-bottom: 16px; font-size: 0.75rem; color: var(--ink-secondary); }
@@ -120,16 +129,6 @@
           <p class="model__q">What is the business worth, and how sure are we?</p>
           <a class="model__go" href="https://courtizy.github.io/valuation/">Open the model <span aria-hidden="true">→</span></a>
         </article>
-        <article class="model model--linked" data-app="delta">
-          <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M32 10L54 52H10z"/></svg></div>
-            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
-          </div>
-          <span class="eyebrow">04 · Readiness</span>
-          <h2>Delta Readiness</h2>
-          <p class="model__q">Am I ready for the PT test?</p>
-          <a class="model__go" href="https://courtizy.github.io/fitness/">Sign in <span aria-hidden="true">→</span></a>
-        </article>
     </div>
 
     <div class="core">
@@ -138,6 +137,13 @@
       <span class="core__q">How likely is each outcome? One Monte Carlo engine under all three.</span>
       <span class="app-status"><span class="app-status__dot"></span>In development</span>
     </div>
+    <a class="side" data-app="delta" href="https://courtizy.github.io/fitness/">
+      <span class="side__tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"><path d="M32 10L54 52H10z"/></svg></span>
+      <span class="eyebrow">Side project</span>
+      <strong>Delta Readiness</strong>
+      <span class="side__q">Am I ready for the PT test?</span>
+      <span class="side__go">Open <span aria-hidden="true">→</span></span>
+    </a>
   </main>
 
   <footer class="site-footer">
