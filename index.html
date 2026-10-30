@@ -84,7 +84,7 @@
     .finding__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
     .finding p { margin: 0; }
     .finding__kpi { display: flex; align-items: baseline; gap: 10px; }
-    .finding__kpi[hidden] { display: none; }
+    .finding__kpi[hidden], .finding .app-status[hidden] { display: none; }
     .finding__num { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 1.75rem; font-weight: 600; line-height: 1; }
     .finding__label { color: var(--ink-secondary); font-size: 0.875rem; }
     .finding__text { color: var(--ink-secondary); }
@@ -180,7 +180,7 @@
       </div>
       <div class="findings__list">
         <article class="finding">
-          <div class="finding__top"><span class="eyebrow">Study 01 · Forecast accuracy</span><span class="app-status"><span class="app-status__dot"></span>Final results pending</span></div>
+          <div class="finding__top"><span class="eyebrow">Study 01 · Forecast accuracy</span><span class="app-status" id="f01-status"><span class="app-status__dot"></span>Final results pending</span></div>
           <p><b>How far should you trust the first five years of a DCF?</b></p>
           <div class="finding__kpi" id="f01-kpi" hidden><span class="finding__num" id="f01-num"></span><span class="finding__label" id="f01-label"></span></div>
           <p class="finding__text">Revenue forecasts built only from what was public on each date, scored against what companies later reported in their SEC filings. Ranges built the standard way are far narrower than the real uncertainty; the study tests ranges calibrated on past forecast misses as the alternative.</p>
@@ -199,15 +199,21 @@
 
   <script>
     // Study 01's headline number comes from the research site's published JSON, never typed here.
-    // If it can't load, the card keeps its text and shows no number.
+    // Version 1 is the pre-final study: show the standard range's coverage and keep "Final results pending".
+    // Version 2+ is the final report: show the calibrated range's coverage and drop the pill.
+    // If the file can't load, the card keeps its text and shows no number.
     fetch("/research/data/forecast_accuracy.json")
       .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then((d) => {
-        const k = d.headline.kpis.find((x) => /80% range/.test(x.label));
+        const final = Number(d.version) >= 2;
+        const k = d.headline.kpis.find((x) => (final ? /calibrated 80% range/ : /80% range/).test(x.label));
         if (!k) return;
         document.getElementById("f01-num").textContent = k.value;
-        document.getElementById("f01-label").textContent = k.label.replace("Outcomes inside the 80% range", "of outcomes inside a standard 80% range");
+        document.getElementById("f01-label").textContent = final
+          ? k.label.replace(/^Outcomes/, "of outcomes")
+          : k.label.replace("Outcomes inside the 80% range", "of outcomes inside a standard 80% range");
         document.getElementById("f01-kpi").hidden = false;
+        if (final) document.getElementById("f01-status").hidden = true;
       })
       .catch(() => {});
 
