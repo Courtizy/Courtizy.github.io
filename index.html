@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jason C. Courtoy · Decision Models</title>
-  <meta name="description" content="Know the odds before you commit. Open decision models for operations, capital allocation and deals by Jason C. Courtoy.">
+  <meta name="description" content="Know the odds before you commit. Open decision models for deals, operations and capital, and the research that tests them, by Jason C. Courtoy.">
   <link rel="icon" type="image/svg+xml" href="brand/icons/core.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="brand/icons/core-32.png">
   <link rel="apple-touch-icon" href="brand/icons/core-180.png">
@@ -15,7 +15,7 @@
   </script>
   <style>
     /* The hub is the one page without a .hub-bar: every app page links back here.
-       One-screen layout: tagline, three cards, Shared Core, footer. Longer copy lives on each app's Overview. */
+       Layout: tagline, four cards, Shared Core, side project, selected findings, footer. Longer copy lives on each app's Overview. */
     body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
     .wrap { max-width: 1120px; width: 100%; margin: 0 auto; padding: 0 16px; }
     .eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-secondary); }
@@ -41,6 +41,8 @@
     .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
     /* Delta Readiness is a side project, not one of the brand's three models, so its colors live here rather than in brand.css */
     [data-app="delta"] { --brand-fill: #2F6B3F; --accent: #46C27F; }
+    /* Research & Analysis uses the neutral slate of its own site (research/site/assets/styles.css): it tests the models rather than being one */
+    [data-app="research"] { --brand-fill: var(--core-outline); --accent: var(--ink); }
     @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) [data-app="delta"] { --accent: #1F7A45; } }
     :root[data-theme="light"] [data-app="delta"] { --accent: #1F7A45; }
     .model {
@@ -72,6 +74,22 @@
     .side__q { flex: 1 1 200px; color: var(--ink-secondary); }
     .side__go { font-weight: 500; color: var(--accent); }
 
+    /* Selected findings: short, sourced takeaways from the research studies */
+    .findings { display: grid; gap: 12px; }
+    .findings__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+    .findings__head h2 { margin: 0; font-size: 1.125rem; }
+    .findings__head a { color: var(--ink-secondary); }
+    .findings__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+    .finding { display: grid; gap: 6px; align-content: start; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--core-outline); }
+    .finding__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+    .finding p { margin: 0; }
+    .finding__kpi { display: flex; align-items: baseline; gap: 10px; }
+    .finding__kpi[hidden], .finding .app-status[hidden] { display: none; }
+    .finding__num { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 1.75rem; font-weight: 600; line-height: 1; }
+    .finding__label { color: var(--ink-secondary); font-size: 0.875rem; }
+    .finding__text { color: var(--ink-secondary); }
+    .finding a { color: var(--accent, var(--ink)); font-weight: 500; }
+
     .site-footer { border-top: 1px solid var(--line); }
     .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; padding-top: 12px; padding-bottom: 16px; font-size: 0.75rem; color: var(--ink-secondary); }
     .site-footer b { color: var(--ink); font-weight: 500; }
@@ -95,16 +113,26 @@
   <main class="wrap" id="models">
     <section class="hero">
       <h1>Know the odds before you commit.</h1>
-      <p>Open decision models for operations, capital allocation and deals.</p>
+      <p>Open decision models for deals, operations and capital, and the research that tests them.</p>
     </section>
 
     <div class="models">
+        <article class="model model--linked" data-app="valuation">
+          <div class="model__top">
+            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg></div>
+            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
+          </div>
+          <span class="eyebrow">Deals · DCF · Comparables</span>
+          <h2>Valuation Model</h2>
+          <p class="model__q">What is the business worth, and how sure are we?</p>
+          <a class="model__go" href="https://courtizy.github.io/valuation/">Open the model <span aria-hidden="true">→</span></a>
+        </article>
         <article class="model model--linked" data-app="tps">
           <div class="model__top">
             <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M52 32a20 20 0 1 1-6-14.3"/><path d="M48 8v10H38"/><circle cx="32" cy="32" r="4" fill="currentColor"/></svg></div>
             <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
           </div>
-          <span class="eyebrow">01 · Operations</span>
+          <span class="eyebrow">Operations · Simulation</span>
           <h2>Turn Pattern Sustainability</h2>
           <p class="model__q">Can the fleet meet the flying schedule?</p>
           <a class="model__go" href="https://courtizy.github.io/TPS-Monte-Carlo-Simulation/">Open the model <span aria-hidden="true">→</span></a>
@@ -114,28 +142,28 @@
             <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 52V40"/><path d="M26 52V30"/><path d="M40 52V22"/><path d="M10 26l14-10 10 6 18-12"/><path d="M44 10h8v8"/></svg></div>
             <span class="app-status"><span class="app-status__dot"></span>In development</span>
           </div>
-          <span class="eyebrow">02 · Capital</span>
+          <span class="eyebrow">Capital · Optimization</span>
           <h2>Project ROI</h2>
           <p class="model__q">Which projects earn funding under real limits?</p>
           <span class="model__soon">Coming next</span>
         </article>
-        <article class="model model--linked" data-app="valuation">
+        <article class="model model--linked" data-app="research">
           <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg></div>
+            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="28" r="14"/><path d="M38 38l14 14"/><path d="M22 32l5-6 4 3 5-7"/></svg></div>
             <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
           </div>
-          <span class="eyebrow">03 · Deals</span>
-          <h2>Valuation Model</h2>
-          <p class="model__q">What is the business worth, and how sure are we?</p>
-          <a class="model__go" href="https://courtizy.github.io/valuation/">Open the model <span aria-hidden="true">→</span></a>
+          <span class="eyebrow">Evidence · Backtesting</span>
+          <h2>Research &amp; Analysis</h2>
+          <p class="model__q">Do the models hold up against what actually happened?</p>
+          <a class="model__go" href="https://courtizy.github.io/research/">Read the studies <span aria-hidden="true">→</span></a>
         </article>
     </div>
 
     <div class="core">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></svg>
       <strong>Shared Core</strong>
-      <span class="core__q">How likely is each outcome? One Monte Carlo engine under all three.</span>
-      <span class="app-status"><span class="app-status__dot"></span>In development</span>
+      <span class="core__q">How likely is each outcome? A shared Monte Carlo engine is planned; today each model runs its own.</span>
+      <span class="app-status"><span class="app-status__dot"></span>Planned</span>
     </div>
     <a class="side" data-app="delta" href="https://courtizy.github.io/fitness/">
       <span class="side__tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"><path d="M32 10L54 52H10z"/></svg></span>
@@ -144,6 +172,22 @@
       <span class="side__q">Am I ready for the PT test?</span>
       <span class="side__go">Open <span aria-hidden="true">→</span></span>
     </a>
+
+    <section class="findings" aria-labelledby="findings-title">
+      <div class="findings__head">
+        <h2 id="findings-title">Selected findings</h2>
+        <a href="https://courtizy.github.io/research/">All studies →</a>
+      </div>
+      <div class="findings__list">
+        <article class="finding">
+          <div class="finding__top"><span class="eyebrow">Study 01 · Forecast accuracy</span><span class="app-status" id="f01-status"><span class="app-status__dot"></span>Final results pending</span></div>
+          <p><b>How far should you trust the first five years of a DCF?</b></p>
+          <div class="finding__kpi" id="f01-kpi" hidden><span class="finding__num" id="f01-num"></span><span class="finding__label" id="f01-label"></span></div>
+          <p class="finding__text">Revenue forecasts built only from what was public on each date, scored against what companies later reported in their SEC filings. Ranges built the standard way are far narrower than the real uncertainty; the study tests ranges calibrated on past forecast misses as the alternative.</p>
+          <a href="https://courtizy.github.io/research/">Read the study →</a>
+        </article>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -154,6 +198,25 @@
   </footer>
 
   <script>
+    // Study 01's headline number comes from the research site's published JSON, never typed here.
+    // Version 1 is the pre-final study: show the standard range's coverage and keep "Final results pending".
+    // Version 2+ is the final report: show the calibrated range's coverage and drop the pill.
+    // If the file can't load, the card keeps its text and shows no number.
+    fetch("/research/data/forecast_accuracy.json")
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then((d) => {
+        const final = Number(d.version) >= 2;
+        const k = d.headline.kpis.find((x) => (final ? /calibrated 80% range/ : /80% range/).test(x.label));
+        if (!k) return;
+        document.getElementById("f01-num").textContent = k.value;
+        document.getElementById("f01-label").textContent = final
+          ? k.label.replace(/^Outcomes/, "of outcomes")
+          : k.label.replace("Outcomes inside the 80% range", "of outcomes inside a standard 80% range");
+        document.getElementById("f01-kpi").hidden = false;
+        if (final) document.getElementById("f01-status").hidden = true;
+      })
+      .catch(() => {});
+
     document.getElementById("theme-toggle").addEventListener("click", () => {
       const root = document.documentElement;
       const current = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
