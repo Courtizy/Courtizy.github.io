@@ -180,15 +180,11 @@
       </div>
       <div class="findings__list">
         <article class="finding">
-          <div class="finding__top"><span class="eyebrow">Study 01 · Forecasting</span></div>
+          <div class="finding__top"><span class="eyebrow">Study 01 · Forecast accuracy</span><span class="app-status"><span class="app-status__dot"></span>Final results pending</span></div>
+          <p><b>How far should you trust the first five years of a DCF?</b></p>
           <div class="finding__kpi" id="f01-kpi" hidden><span class="finding__num" id="f01-num"></span><span class="finding__label" id="f01-label"></span></div>
-          <p class="finding__text">Revenue forecasts built only from point-in-time SEC filings, scored against what companies later reported. The Valuation Model's ranges were far narrower than the real uncertainty, so the model was changed.</p>
-          <a href="https://courtizy.github.io/research/forecast-accuracy/memo.html">Read the one-page memo →</a>
-        </article>
-        <article class="finding">
-          <div class="finding__top"><span class="eyebrow">Study 01b · Forecasting</span><span class="app-status"><span class="app-status__dot"></span>Re-checking</span></div>
-          <p class="finding__text"><b>Did the fixes work?</b> A blended base case and ranges calibrated on past misses are now in the model. The re-test is being re-run on strictly point-in-time data before its results are reported here.</p>
-          <a href="https://courtizy.github.io/research/notebooks/forecast-accuracy-rescore.html">See the study so far →</a>
+          <p class="finding__text">Revenue forecasts built only from what was public on each date, scored against what companies later reported in their SEC filings. Ranges built the standard way are far narrower than the real uncertainty; the study tests ranges calibrated on past forecast misses as the alternative.</p>
+          <a href="https://courtizy.github.io/research/">Read the study →</a>
         </article>
       </div>
     </section>
@@ -210,7 +206,7 @@
         const k = d.headline.kpis.find((x) => /80% range/.test(x.label));
         if (!k) return;
         document.getElementById("f01-num").textContent = k.value;
-        document.getElementById("f01-label").textContent = k.label.replace("Outcomes inside the 80% range", "of outcomes inside the model's 80% range");
+        document.getElementById("f01-label").textContent = k.label.replace("Outcomes inside the 80% range", "of outcomes inside a standard 80% range");
         document.getElementById("f01-kpi").hidden = false;
       })
       .catch(() => {});
