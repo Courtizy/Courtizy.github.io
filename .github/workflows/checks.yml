@@ -1,0 +1,29 @@
+# Checks the hub's "Selected findings" card against the research artifact that feeds it.
+# The hub itself deploys with GitHub's built-in Pages build from main; this workflow doesn't publish anything.
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 13 * * 1"   # weekly: catches a research release that changes the contract
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  findings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest==8.3.3
+      - name: Contract tests (offline fixture)
+        run: pytest -q tests
+      - name: Live research artifact and study deep link
+        run: python scripts/check_findings.py
