@@ -80,6 +80,10 @@ html.dz-app body{background-color:var(--dz-bg)}
   .dz-tile{width:36px;height:36px;border-radius:10px}
   .dz-tile svg{width:20px;height:20px}
   .dz-btn{padding:0 14px;font-size:.82rem}
-  .dz-tabs{padding-block:6px}
+  .dz-tabs{padding-block:4px}
+  .dz-strip{font-size:.78rem}
+  .dz-strip .dz-in{flex-wrap:nowrap;padding-block:0 4px}
+  .dz-strip span:not(.dz-tag){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dz-tag{flex:none;font-size:.68rem;padding:2px 8px}
   .dz-tabs a{padding:0 14px;font-size:.84rem}
 }
