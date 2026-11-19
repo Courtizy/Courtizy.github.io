@@ -15,7 +15,7 @@
   </script>
   <style>
     /* Homepage only. Everything here is inline in index.html, so none of it reaches the app pages, which load brand.css alone.
-       Layout (2026-11-19 redesign): question-led columns. Each live model gets one column, side by side on desktop and stacked
+       Layout (2026-11-19 redesign): question-led panels. Each live model gets one rounded panel, side by side on desktop and stacked
        on a phone: its decision question is the link, and a small example result from the model's own published JSON sits
        under it (home/previews.js).
        Planned work sits in a quieter "Next" list; Delta Readiness is a separate side-project line.
@@ -50,7 +50,7 @@
     /* ---- Live models: question-led rows ---- */
     .live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 48px; }
     .live > .label { grid-column: 1 / -1; padding-bottom: 10px; }
-    .row { position: relative; display: grid; grid-template-rows: auto 1fr; gap: 16px; padding: 18px 0 8px; border-top: 3px solid var(--brand-fill); }
+    .row { position: relative; display: grid; grid-template-rows: auto 1fr; gap: 16px; padding: 18px 0 8px; }
     @supports (grid-template-rows: subgrid) {   /* line the two previews up across the columns */
       .live { grid-template-rows: auto auto auto; }
       .row { grid-row: span 2; grid-template-rows: subgrid; }
@@ -140,10 +140,27 @@
     .site-footer b { color: var(--ink); font-weight: 500; }
     .site-footer a { color: var(--ink-secondary); display: inline-block; padding: 12px 0; }
 
+
+    /* ---- Rounded shape (2026-11-19, Jason's ask): live models as soft panels; tiles, bars, toggle and focus rings rounded.
+       The app pages keep their square frame; this stays homepage-only. ---- */
+    .live { gap: 20px; }
+    .row { padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+    .row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--brand-fill); }
+    .row:hover { border-color: var(--ink-secondary); }
+    .row:has(.row__link:focus-visible) { outline-offset: 3px; }
+    .row .brand-tile, .side__tile { border-radius: 9px; }
+    .theme-toggle { border-radius: 999px; }
+    .ff__bar, .days__bar, .key--bar { border-radius: 999px; }
+    .ff__mid, .days__mid { border-radius: 2px; }
+    .side { padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: 999px; }
+    .side:hover { border-color: var(--ink-secondary); }
+    a:focus-visible, button:focus-visible { border-radius: 8px; }
+    .side:focus-visible { border-radius: 999px; }
+
     @media (max-width: 860px) {
       .live { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
       .row { grid-row: auto; grid-template-rows: auto auto; }
-      .row + .row { margin-top: 20px; }
+      .live { gap: 16px; }
       .pv { min-height: 0; }
       .next { grid-template-columns: minmax(0, 1fr); gap: 14px; }
     }
@@ -154,7 +171,8 @@
       .topbar nav { gap: 4px 12px; font-size: 0.875rem; }
       .who b { font-size: 0.9375rem; }
       .hero h1 { font-size: 2.125rem; }
-      .row { padding: 16px 0 4px; }
+      .row { padding: 18px 16px 14px; border-radius: 16px; }
+      .side { border-radius: 16px; }
       .row__what { font-size: 0.9375rem; }
       .ff__row, .ff__axis { grid-template-columns: 7.6em minmax(0, 1fr) 5em; gap: 8px; }
     }
@@ -165,7 +183,7 @@
   <header class="topbar">
     <div class="wrap">
       <a class="who" href="./">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" fill="var(--panel)" stroke="var(--core-outline)" stroke-width="3"/><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" transform="translate(9.6 9.6) scale(0.7)"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></g></svg>
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="12" fill="var(--panel)" stroke="var(--core-outline)" stroke-width="3"/><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" transform="translate(9.6 9.6) scale(0.7)"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></g></svg>
         <b>Jason C. Courtoy</b><span>Decision Models</span>
       </a>
       <nav aria-label="Profiles">
