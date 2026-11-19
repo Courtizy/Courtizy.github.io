@@ -141,18 +141,19 @@
     .site-footer a { color: var(--ink-secondary); display: inline-block; padding: 12px 0; }
 
 
-    /* ---- Rounded shape (2026-11-19, Jason's ask): live models as soft panels; tiles, bars, toggle and focus rings rounded.
-       The app pages keep their square frame; this stays homepage-only. ---- */
+    /* ---- Rounded shape (2026-11-19, Jason's ask): the suite's shape tokens from brand.css (after Delta Readiness):
+       live models as soft panels; tiles, bars, toggle and focus rings rounded. ---- */
     .live { gap: 20px; }
-    .row { padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); overflow: hidden; }
+    .row { padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--panel); box-shadow: var(--shadow-card); overflow: hidden; }
     .row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--brand-fill); }
     .row:hover { border-color: var(--ink-secondary); }
     .row:has(.row__link:focus-visible) { outline-offset: 3px; }
-    .row .brand-tile, .side__tile { border-radius: 9px; }
-    .theme-toggle { border-radius: 999px; }
+    .side__tile { border-radius: 8px; }
+    .row .brand-tile { border-radius: 10px; }
+    .theme-toggle { border-radius: var(--radius-control); }
     .ff__bar, .days__bar, .key--bar { border-radius: 999px; }
     .ff__mid, .days__mid { border-radius: 2px; }
-    .side { padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: 999px; }
+    .side { padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--panel); box-shadow: var(--shadow-card); }
     .side:hover { border-color: var(--ink-secondary); }
     a:focus-visible, button:focus-visible { border-radius: 8px; }
     .side:focus-visible { border-radius: 999px; }
