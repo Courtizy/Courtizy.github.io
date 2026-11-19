@@ -7,7 +7,7 @@
   const has = k => { try { return !!localStorage.getItem(k); } catch (e) { return false; } };
   const signedIn = has("fitness-session") || has("fitness-gh-token");
   const R = document.documentElement;
-  if (!R.getAttribute("data-theme")) { let t = null; try { t = localStorage.getItem("a-theme"); } catch (e) {} R.setAttribute("data-theme", t || "dark"); }
+  if (!R.getAttribute("data-theme")) { let t = null; try { t = localStorage.getItem("a-theme"); } catch (e) {} R.setAttribute("data-theme", t || "light"); }
   if (mode !== "public") R.classList.add("dz-app");
   const results = signedIn ? base : base + "demo.html";
   const tab = (k, href, label) => `<a href="${href}"${k === page ? ' aria-current="page"' : ""}>${label}</a>`;

@@ -1,65 +1,85 @@
-/* Delta Readiness: the Decision Models frame (hub bar, app header, Overview · Results · Method, footer) in the HUD look.
-   Shared by overview.html, the sign-in loader, the signed-in app and demo.html. Theme follows data-theme on <html> (a-theme). */
+/* Delta Readiness: the Decision Models frame (hub bar, app header, Overview · Results · Method, footer) in the clean fitness look.
+   Shared by overview.html, the sign-in loader, the signed-in app and demo.html. Theme follows data-theme on <html> (a-theme, light by default). */
 :root{
-  --dz-bg:#ECEBE4; --dz-panel:#F9F8F3; --dz-panel2:#E4E1D6; --dz-ink:#15170F; --dz-muted:#5C5E4E; --dz-rule:#CDC9B9;
-  --dz-accent:#13703F; --dz-on-accent:#FFFFFF; --dz-tan:#7A6236; --dz-grid:rgba(70,66,40,.05); --dz-glow:none;
+  --dz-bg:#F2F4F1; --dz-panel:#FFFFFF; --dz-panel2:#ECEFEA; --dz-ink:#101814; --dz-muted:#56635B; --dz-rule:#DFE4DD;
+  --dz-accent:#1F7A45; --dz-on-accent:#FFFFFF; --dz-tan:#56635B; --dz-grid:transparent; --dz-glow:none;
+  --dz-shadow:0 1px 2px rgba(16,24,20,.05),0 6px 20px rgba(16,24,20,.06); --dz-bar:rgba(255,255,255,.82);
   --dz-fill:#2F6B3F; --dz-on-fill:#FFFFFF;
-  --dz-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
-  --dz-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --dz-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --dz-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,"Segoe UI",Roboto,sans-serif;
+  --dz-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",Roboto,sans-serif;
+  --dz-mono:var(--dz-body);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --dz-bg:#07090A; --dz-panel:#0D1112; --dz-panel2:#141A1A; --dz-ink:#D8E4DC; --dz-muted:#8E9A90; --dz-rule:#253029;
-  --dz-accent:#3DEB8F; --dz-on-accent:#04110A; --dz-tan:#C2A675; --dz-grid:rgba(61,235,143,.035); --dz-glow:0 0 14px rgba(61,235,143,.32); color-scheme:dark}}
+  --dz-bg:#0B0F0D; --dz-panel:#161C19; --dz-panel2:#212925; --dz-ink:#EEF3EF; --dz-muted:#9BA8A0; --dz-rule:#2A332E;
+  --dz-accent:#4FD486; --dz-on-accent:#05140B; --dz-tan:#9BA8A0; --dz-grid:transparent; --dz-glow:none;
+  --dz-shadow:none; --dz-bar:rgba(22,28,25,.82); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --dz-bg:#07090A; --dz-panel:#0D1112; --dz-panel2:#141A1A; --dz-ink:#D8E4DC; --dz-muted:#8E9A90; --dz-rule:#253029;
-  --dz-accent:#3DEB8F; --dz-on-accent:#04110A; --dz-tan:#C2A675; --dz-grid:rgba(61,235,143,.035); --dz-glow:0 0 14px rgba(61,235,143,.32); color-scheme:dark}
+  --dz-bg:#0B0F0D; --dz-panel:#161C19; --dz-panel2:#212925; --dz-ink:#EEF3EF; --dz-muted:#9BA8A0; --dz-rule:#2A332E;
+  --dz-accent:#4FD486; --dz-on-accent:#05140B; --dz-tan:#9BA8A0; --dz-grid:transparent; --dz-glow:none;
+  --dz-shadow:none; --dz-bar:rgba(22,28,25,.82); color-scheme:dark}
 
 .dz-hub,.dz-head,.dz-tabbar,.dz-strip,.dz-foot{font-family:var(--dz-body);color:var(--dz-ink);-webkit-text-size-adjust:100%}
-.dz-in{max-width:1120px;margin:0 auto;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.dz-in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
 /* hub bar */
-.dz-hub{background:var(--dz-bg);border-bottom:1px solid var(--dz-rule);font:500 .72rem/1 var(--dz-mono);letter-spacing:.08em;text-transform:uppercase}
+.dz-hub{background:var(--dz-bg);font:600 .78rem/1 var(--dz-body)}
 .dz-hub .dz-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px}
-.dz-hub a{display:inline-flex;align-items:center;min-height:40px;color:var(--dz-ink);text-decoration:none}
+.dz-hub a{display:inline-flex;align-items:center;min-height:44px;color:var(--dz-ink);text-decoration:none}
 .dz-hub a:hover{color:var(--dz-accent)}
-.dz-hub span{color:var(--dz-muted)}
+.dz-hub span{color:var(--dz-muted);font-weight:500}
 
 /* app header: 6px brand stripe, Δ tile, name, question, status pill, actions */
-.dz-head{background:var(--dz-panel);border-top:6px solid var(--dz-fill);border-bottom:1px solid var(--dz-rule)}
+.dz-head{background:var(--dz-panel);border-top:6px solid var(--dz-fill);box-shadow:var(--dz-shadow)}
 .dz-head .dz-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-block:14px}
-.dz-tile{width:44px;height:44px;flex:none;display:grid;place-items:center;background:var(--dz-fill);color:var(--dz-on-fill);border-radius:4px}
-.dz-tile svg{width:26px;height:26px}
+.dz-tile{width:44px;height:44px;flex:none;display:grid;place-items:center;background:var(--dz-fill);color:var(--dz-on-fill);border-radius:12px}
+.dz-tile svg{width:24px;height:24px}
 .dz-name{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px}
-.dz-name h1,.dz-name .dz-h{margin:0;font:700 1.45rem/1.05 var(--dz-display);letter-spacing:.04em;text-transform:uppercase;color:var(--dz-ink)}
+.dz-name h1,.dz-name .dz-h{margin:0;font:800 1.4rem/1.1 var(--dz-display);letter-spacing:-.02em;color:var(--dz-ink)}
 .dz-name p{margin:0;font-size:.9rem;color:var(--dz-muted)}
-.dz-status{display:inline-flex;align-items:center;gap:7px;font:600 .68rem var(--dz-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dz-muted);white-space:nowrap}
-.dz-status i{width:8px;height:8px;border-radius:50%;background:var(--dz-accent);box-shadow:var(--dz-glow)}
-.dz-right{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;justify-content:flex-end}
+.dz-status{display:inline-flex;align-items:center;gap:6px;font:700 .72rem var(--dz-body);color:var(--dz-accent);white-space:nowrap;padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--dz-accent) 12%,transparent)}
+.dz-status i{width:7px;height:7px;border-radius:50%;background:var(--dz-accent)}
+.dz-right{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;justify-content:flex-end}
 .dz-acts{display:flex;align-items:center;gap:8px}
-.dz-btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border-radius:4px;border:1px solid var(--dz-rule);background:var(--dz-panel2);color:var(--dz-ink);font:600 .72rem var(--dz-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;white-space:nowrap}
-.dz-btn:hover{border-color:var(--dz-accent)}
-.dz-btn.dz-primary{background:var(--dz-accent);border-color:var(--dz-accent);color:var(--dz-on-accent)}
-.dz-btn.dz-icon{width:40px;padding:0}
+.dz-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--dz-panel2);color:var(--dz-ink);font:700 .88rem var(--dz-body);text-decoration:none;cursor:pointer;white-space:nowrap}
+.dz-btn:hover{filter:brightness(.97)}
+.dz-btn:focus-visible,.dz-tabs a:focus-visible,.dz-hub a:focus-visible{outline:2px solid var(--dz-accent);outline-offset:2px}
+.dz-btn.dz-primary{background:var(--dz-accent);color:var(--dz-on-accent)}
+.dz-btn.dz-icon{width:44px;padding:0}
 
-/* Overview · Results · Method */
-.dz-tabbar{background:var(--dz-panel);border-bottom:1px solid var(--dz-rule)}
-.dz-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-.dz-tabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-bottom:2px solid transparent;color:var(--dz-muted);text-decoration:none;font:600 .74rem var(--dz-mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+/* Overview · Results · Method: a segmented control */
+.dz-tabbar{background:var(--dz-bg)}
+.dz-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+.dz-tabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;color:var(--dz-muted);text-decoration:none;font:700 .88rem var(--dz-body);white-space:nowrap}
 .dz-tabs a:hover{color:var(--dz-ink)}
-.dz-tabs a[aria-current="page"]{color:var(--dz-ink);border-bottom-color:var(--dz-accent);text-shadow:var(--dz-glow)}
+.dz-tabs a[aria-current="page"]{color:var(--dz-ink);background:var(--dz-panel);box-shadow:var(--dz-shadow)}
+:root[data-theme="dark"] .dz-tabs a[aria-current="page"]{background:var(--dz-panel2)}
 
 /* demo strip */
-.dz-strip{background:var(--dz-panel2);border-bottom:1px solid var(--dz-rule);font-size:.86rem}
-.dz-strip .dz-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding-block:8px}
-.dz-tag{font:600 .66rem var(--dz-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dz-tan);border:1px solid var(--dz-tan);padding:2px 7px;border-radius:3px}
-.dz-strip span{color:var(--dz-muted)}
+.dz-strip{font-size:.86rem}
+.dz-strip .dz-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding-block:0 6px}
+.dz-tag{font:700 .72rem var(--dz-body);color:var(--dz-on-accent);background:var(--dz-accent);padding:3px 10px;border-radius:999px}
+.dz-strip span:not(.dz-tag){color:var(--dz-muted)}
 
 /* footer */
-.dz-foot{border-top:1px solid var(--dz-rule);margin-top:32px;font-size:.76rem;color:var(--dz-muted)}
-.dz-foot .dz-in{padding-block:16px 28px;display:grid;gap:4px}
+.dz-foot{margin-top:32px;font-size:.76rem;color:var(--dz-muted)}
+.dz-foot .dz-in{padding-block:16px 28px;display:grid;gap:4px;border-top:1px solid var(--dz-rule)}
 .dz-foot p{margin:0}
 html.dz-app .dz-foot{margin-top:0}
 html.dz-app body{background-color:var(--dz-bg)}
 @media (max-width:899px){html.dz-app .dz-foot .dz-in{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
-@media (max-width:520px){.dz-head .dz-in{padding-block:10px;flex-wrap:nowrap;align-items:flex-start}.dz-name{flex:1 1 0}.dz-right{flex-direction:column;align-items:flex-end;flex:none}.dz-btn{min-height:36px;padding:0 10px}.dz-btn.dz-icon{width:36px}.dz-tile{width:38px;height:38px}.dz-name h1,.dz-name .dz-h{font-size:1.2rem}.dz-name p{font-size:.82rem}}
+/* phone: one compact header row (the question moves under the name, small) */
+@media (max-width:520px){
+  .dz-hub{font-size:.74rem}
+  .dz-head .dz-in{padding-block:10px;flex-wrap:nowrap;gap:10px}
+  .dz-name{flex:1 1 0}
+  .dz-name h1,.dz-name .dz-h{font-size:1.1rem}
+  .dz-name p{font-size:.78rem}
+  .dz-right{flex:none;gap:6px}
+  .dz-name .dz-h,.dz-name h1{white-space:nowrap}
+  .dz-status{font-size:0;gap:0;padding:6px}  /* dot only; the word stays for screen readers */
+  .dz-tile{width:36px;height:36px;border-radius:10px}
+  .dz-tile svg{width:20px;height:20px}
+  .dz-btn{padding:0 14px;font-size:.82rem}
+  .dz-tabs{padding-block:6px}
+  .dz-tabs a{padding:0 14px;font-size:.84rem}
+}
