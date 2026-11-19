@@ -1,0 +1,125 @@
+{
+ "ticker": "DEMO",
+ "as_of": "2026-09-30",
+ "price": 45.0,
+ "blend": {
+  "p10": 34.361684060275856,
+  "p50": 42.60626208452145,
+  "p90": 53.88443250688216
+ },
+ "football_field": [
+  {
+   "model": "comps",
+   "p10": 37.36927492063208,
+   "p50": 43.296393537740165,
+   "p90": 47.76719328116914,
+   "mean": 43.296393537740165
+  },
+  {
+   "model": "comps_closest",
+   "p10": 36.87365899895058,
+   "p50": 38.41673918062601,
+   "p90": 40.994834915648724,
+   "mean": 38.41673918062601
+  },
+  {
+   "model": "comps_synth",
+   "p10": 37.00911056246911,
+   "p50": 38.915921852501796,
+   "p90": 54.22322938374863,
+   "mean": 38.915921852501796
+  },
+  {
+   "model": "dcf",
+   "p5": 29.65044524967259,
+   "p10": 32.35662348670504,
+   "p50": 42.146174449042306,
+   "p90": 57.962591990690846,
+   "p95": 64.16692787614676,
+   "mean": 44.75861659280986
+  },
+  {
+   "model": "dcf_synergy",
+   "p10": 44.37999569355683,
+   "p50": 46.7800504814143,
+   "p90": 49.29076634329621,
+   "mean": 46.7800504814143
+  },
+  {
+   "model": "just_synergy",
+   "p10": 48.901353151562354,
+   "p50": 50.20180420208314,
+   "p90": 51.50225525260393,
+   "mean": 50.20180420208314
+  },
+  {
+   "model": "lbo",
+   "p10": 33.466779768790005,
+   "p50": 38.09541638921445,
+   "p90": 44.0404248992533,
+   "mean": 38.09541638921445
+  },
+  {
+   "model": "precedents",
+   "p10": 60.11003477841056,
+   "p50": 62.39208945464948,
+   "p90": 63.75280456842409,
+   "mean": 62.39208945464948
+  }
+ ],
+ "plan": {
+  "methods": [
+   {
+    "model": "dcf",
+    "name": "DCF (Standalone)",
+    "ran": true,
+    "weight": 0.6
+   },
+   {
+    "model": "comps",
+    "name": "Public Comps: Sector Peers",
+    "ran": true,
+    "weight": 0.4
+   },
+   {
+    "model": "comps_closest",
+    "name": "Public Comps: Closest Match",
+    "ran": true,
+    "weight": 0.0
+   },
+   {
+    "model": "comps_synth",
+    "name": "Public Comps: Synthesized Firm",
+    "ran": true,
+    "weight": 0.0
+   },
+   {
+    "model": "dcf_synergy",
+    "name": "DCF with Synergies",
+    "ran": true,
+    "weight": 0.0
+   },
+   {
+    "model": "just_synergy",
+    "name": "Just Synergies",
+    "ran": true,
+    "weight": 0.0
+   },
+   {
+    "model": "lbo",
+    "name": "LBO",
+    "ran": true,
+    "weight": 0.0
+   },
+   {
+    "model": "precedents",
+    "name": "Precedent Transactions",
+    "ran": true,
+    "weight": 0.0
+   }
+  ]
+ },
+ "headlines": {
+  "field": "The weighted methods agree within $1.15 a share: the DCF at $42.15, sector comps at $43.30."
+ }
+}
