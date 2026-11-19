@@ -77,7 +77,7 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
     <div class="card answer" aria-label="What it tells you">
       <span class="lbl">Every morning</span>
       <div class="row"><b>0–100</b><span>Readiness against your own baseline.</span></div>
-      <div class="row"><b>/ 100</b><span>PT score today and on test day.</span></div>
+      <div class="row"><b>100 pts</b><span>PT score today, and projected for your next test.</span></div>
       <div class="row"><b>2-mile</b><span>Projected run time from your recent runs.</span></div>
     </div>
   </div>
@@ -94,7 +94,7 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
   <div class="pair">
     <div class="card"><h3>What it can't tell you</h3><ul>
       <li>It's not medical advice. Sick or hurt beats any score.</li>
-      <li>Points between chart steps are estimated, so allow about one either way.</li>
+      <li>A projected score is a forecast, not an official result.</li>
       <li>Projections assume your current trend holds.</li>
     </ul></div>
     <div class="card"><h3>Built on</h3><ul>
@@ -136,15 +136,15 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
 
   <section class="card msec" id="m-model"><h3>The model</h3>
     <p><b>Readiness.</b> Each signal is compared with your last 21 days, scored 0–100 and weighted as above. Missing signals drop out. 85+ Ready to push, 70+ Good to go, 55+ Keep it controlled, below that Recover today.</p>
-    <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scaled from each event's minimum to maximum for your age and sex. 75 passes, 90 is Excellent, and any missed minimum fails.</p>
-    <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula and carried along your 10-week trend.</p>
+    <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scored on the official AFPC chart rows for your age group and sex (effective 1 Mar 26). 75 passes, 90 is Excellent, and any missed minimum fails.</p>
+    <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula. The recent trend is carried for up to nine weeks, then held flat, so a test months away isn't extrapolated.</p>
   </section>
 
   <section class="card msec" id="m-validation"><h3>Validation</h3>
     <ul class="chk">
       <li><span class="pill done">Done</span><span>2-mile estimate matches the detailed dashboard on the same data.</span></li>
       <li><span class="pill plan">Planned</span><span>Test readiness against session results and refit the weights.</span></li>
-      <li><span class="pill plan">Planned</span><span>Check every event against the official charts, step by step.</span></li>
+      <li><span class="pill done">Done</span><span>Every event, age group and sex checked cell by cell against the AFPC chart, with a test that fails if a row drifts.</span></li>
       <li><span class="pill plan">Planned</span><span>Score past 2-mile projections against the time trials that followed.</span></li>
     </ul>
   </section>
@@ -154,11 +154,14 @@ td.num{font-family:var(--dz-mono);font-variant-numeric:tabular-nums;white-space:
       <li>An estimate from your data, not a medical reading.</li>
       <li>Readiness needs about a week of data to start.</li>
       <li>Lifting and nutrition are only as fresh as the last export.</li>
+      <li>Projections assume your recent trend holds; the further the test, the wider the real range.</li>
     </ul>
   </section>
 
   <section class="card msec" id="m-changelog"><h3>Changelog</h3>
     <ul>
+      <li><span class="mono">2026-11-19</span> Today leads with the call, the signals behind it, and the PT outlook.</li>
+      <li><span class="mono">2026-11-18</span> Projections aim at the next test after one is taken; PT charts checked cell by cell; saves from two devices no longer overwrite each other.</li>
       <li><span class="mono">2026-10-24</span> Tighter copy across the app and these pages.</li>
       <li><span class="mono">2026-10-23</span> Joined the Decision Models frame, with a public Overview, Method and demo.</li>
       <li><span class="mono">2026-10-23</span> Renamed Delta Readiness, with the tactical HUD theme.</li>
