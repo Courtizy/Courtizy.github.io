@@ -4128,6 +4128,8 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 #cc .a-list{display:grid;gap:8px}
 #cc .a-item{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;font-size:.9rem}
 #cc .a-dot{width:10px;height:10px;border-radius:50%}
+#cc .a-itemb{all:unset;box-sizing:border-box;display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;font-size:.9rem;min-height:44px;cursor:pointer;width:100%}
+#cc .a-itemb:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 #cc .a-done{color:var(--good);font:600 .72rem var(--f-mono)}
 #cc .a-miss{color:var(--muted);font:600 .72rem var(--f-mono)}
 #cc .a-bars{display:grid;gap:7px}
@@ -4135,6 +4137,7 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 #cc .a-bar .t{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden}
 #cc .a-bar .t i{display:block;height:100%;border-radius:3px}
 #cc .a-bar .v{font:500 .8rem var(--f-mono);text-align:right}
+#cc .a-bar .a-st{display:block;font:600 .68rem var(--f-body);color:var(--muted);line-height:1.2}
 #cc .a-pfrows{display:grid;gap:14px;margin-top:4px}
 #cc .a-pfrow{display:grid;gap:6px;padding-top:12px;border-top:1px solid var(--rule)}
 #cc .a-pfh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
@@ -4195,6 +4198,7 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 #cc .a-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font:500 .68rem var(--f-mono);color:var(--muted)}
 #cc .a-legend b{display:block;font:600 .9rem var(--f-mono);color:var(--ink)}
 #cc .a-insight b{font-weight:600}
+#cc .a-ins{display:grid;gap:8px}
 #cc .a-sheet{position:fixed;inset:0;z-index:900;display:grid;align-items:end}
 #cc .a-sheet[hidden]{display:none}
 #cc .a-sheet .bk{position:absolute;inset:0;background:rgba(0,0,0,.5)}
@@ -4211,6 +4215,8 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 #cc .a-big,#cc .a-mid,#cc .a-stats b,#cc .a-heat b,#cc .a-day .d b,#cc .a-bar .v,#cc .a-legend b,#cc .a-u{font-variant-numeric:tabular-nums}
 #cc :is(div,#cc button,#cc form,#cc section).a-card{border-radius:22px;padding:16px;box-shadow:var(--shadow)}
 #cc .a-top h1{font-weight:800;letter-spacing:-.025em;font-size:2.1rem}
+@media (max-width:899px){#cc .a-top{padding:8px 2px 6px}
+#cc .a-top h1{font-size:1.75rem}}
 #cc .a-top .a-date{font:600 .8rem var(--f-body);letter-spacing:0;text-transform:none}
 #cc .a-lbl{font:600 .78rem var(--f-body);letter-spacing:0;text-transform:none;color:var(--muted)}
 #cc .a-big,#cc .a-mid,#cc .a-stats b,#cc .a-heat b,#cc .a-day .d b{font-weight:800;letter-spacing:-.03em}
@@ -4560,6 +4566,9 @@ const R = (() => {
 })();
 const band = s => s == null ? ["p-none", "Not enough data", "var(--muted)"] : s >= 85 ? ["p-prime", "Ready to push", "var(--prime)"] : s >= 70 ? ["p-good", "Good to go", "var(--good)"] : s >= 55 ? ["p-warn", "Keep it controlled", "var(--warn)"] : ["p-bad", "Recover today", "var(--bad)"];
 const cBand = s => s >= 65 ? "var(--good)" : s >= 45 ? "var(--warn)" : "var(--bad)";
+/* state word beside each contributor bar, so the bar never relies on color alone */
+const cWord = s => s >= 65 ? "normal" : s >= 45 ? "watch" : "off";
+const cBar = x => `<div class="a-bar"><span>${x.name}<small class="a-st" style="color:${cBand(x.sc)}">${cWord(x.sc)}</small></span><span class="t"><i style="width:${x.sc}%;background:${cBand(x.sc)}"></i></span><span class="v">${x.fmt(x.v)}${x.unit === "h" ? " h" : ""}</span></div>`;
 const sleepCol = h => h == null ? "var(--muted)" : h < 6 ? "var(--bad)" : h < 7 ? "var(--warn)" : "var(--good)";
 const loadCol = a => a == null ? "var(--muted)" : a > 1.5 ? "var(--bad)" : a > 1.3 || a < .8 ? "var(--warn)" : "var(--good)";
 const contribLine = x => {
@@ -4633,8 +4642,8 @@ const SHEETS = {
   ptcalc: () => ptSheet(),
   readiness: () => {
     const [cls, lab] = band(R.score);
-    const rows = R.c.map(x => x.miss ? `<div class="a-bar"><span>${x.name}</span><span class="t"></span><span class="v">–</span></div><div class="a-note" style="margin:-4px 0 2px 106px">${x.why ? x.why[0].toUpperCase() + x.why.slice(1) + "." : "No recent reading."}</div>`
-      : `<div class="a-bar"><span>${x.name}</span><span class="t"><i style="width:${x.sc}%;background:${cBand(x.sc)}"></i></span><span class="v">${x.fmt(x.v)}${x.unit === "h" ? " h" : ""}</span></div><div class="a-note" style="margin:-4px 0 2px 106px">${contribLine(x)}</div>`).join("");
+    const rows = R.c.map(x => x.miss ? `<div class="a-bar"><span>${x.name}<small class="a-st">missing</small></span><span class="t"></span><span class="v">–</span></div><div class="a-note" style="margin:-4px 0 2px 106px">${x.why ? x.why[0].toUpperCase() + x.why.slice(1) + "." : "No recent reading."}</div>`
+      : `${cBar(x)}<div class="a-note" style="margin:-4px 0 2px 106px">${contribLine(x)}</div>`).join("");
     const p = rangePts(HRV, sheetState.range), b = HRV.length ? base(HRV, TODAY) : null;
     return `<div class="a-card"><div class="a-h"><div><span class="a-big">${R.score ?? "–"}</span><span class="a-u">/ 100</span></div><span class="a-pill ${cls}">${lab}</span></div>
       <div class="a-why">${readyAdvice()}</div></div>
@@ -4915,6 +4924,7 @@ function ptSheet() {
       <div id="aPtRows" class="a-pfrows">${ptRowsHtml(mode)}</div>
       <div class="a-note">Blank boxes use your data. Type a number to try a what-if.</div></div>
     <div class="a-card"><span class="a-lbl">Readiness</span><div class="a-why">${ptReady()}</div></div>
+    <div class="a-card"><span class="a-lbl">Run plan, test prep and body</span>${classic(["pt", "ptPrep", "ptb"])}</div>
     <div class="a-note">USAF PFRA, March 2026 (DAFMAN 36-2905): cardio 50, waist 20, strength 15, core 15. Points come from the AFPC chart rows (effective 1 Mar 26, corrected 17 Mar 26). Results not entered here are estimated from your data, and test-day numbers are forecasts.</div>`;
 }
 function ptSummary() {
@@ -4957,7 +4967,7 @@ function insight() {
   const W4 = D.wt.slice(-5), rate = W4.length > 1 ? (W4[W4.length - 1][1] - W4[0][1]) / (W4.length - 1) : 0;
   if (rate < -1.5) L.push(`<b>Losing ${r1(-rate)} lb a week.</b> Over 1% of body weight a week starts costing strength.`);
   const due = ptDue(), days = due ? gap(TODAY, due) : null; if (days != null && days >= 0 && days <= 42) L.push(`<b>PT test in ${days} days</b> (${fD(due)}).`);
-  return L[0] || "Nothing flagged. Keep it up.";
+  return L.slice(0, 3);
 }
 
 /* ---------- views ---------- */
@@ -5023,7 +5033,7 @@ function todayView() {
     <div class="a-card"><div class="a-h" style="padding-right:0"><span class="a-lbl">On today</span><button type="button" class="a-link" data-go="plan">Week ›</button></div>
       ${items.length ? `<div class="a-list">${items.map(c => `<div class="a-item"><span class="a-dot" style="background:${LAYER[c.l][1]}"></span><span><b>${esc(c.t)}</b>${c.m && !/\bmin\b/i.test(c.t) ? ` · ${c.m} min` : ""}</span>${DONE.has(c.id) ? `<span class="a-done">DONE</span>` : ""}</div>`).join("")}</div>` : `<div class="a-empty">Nothing planned. Rest, walk, or do mobility.</div>`}
     </div>
-    <div class="a-card"><span class="a-lbl">Today's insight</span><div class="a-insight">${insight()}</div></div>
+    ${(() => { const I = insight(); return `<div class="a-card"><span class="a-lbl">${I.length > 1 ? `${I.length} things to watch` : "Today's insight"}</span>${I.length ? `<div class="a-ins">${I.map(t => `<div class="a-insight">${t}</div>`).join("")}</div>` : `<div class="a-insight">Nothing flagged. Keep it up.</div>`}</div>`; })()}
   </div>
   <div class="a-col">
     <div class="a-tiles">
@@ -5100,7 +5110,7 @@ function recoveryView() {
   return `<div class="a-col">
     <button type="button" class="a-card" data-sheet="readiness"><div class="a-h"><span class="a-lbl">Readiness</span><span class="a-pill ${cls}">${lab}</span></div>
       <div><span class="a-big">${R.score ?? "–"}</span><span class="a-u">/ 100</span></div>
-      <div class="a-bars">${R.c.filter(x => !x.miss).map(x => `<div class="a-bar"><span>${x.name}</span><span class="t"><i style="width:${x.sc}%;background:${cBand(x.sc)}"></i></span><span class="v">${x.fmt(x.v)}${x.unit === "h" ? " h" : ""}</span></div>`).join("")}</div>
+      <div class="a-bars">${R.c.filter(x => !x.miss).map(cBar).join("")}</div>${R.c.some(x => x.miss) ? `<span class="a-note">Missing: ${R.c.filter(x => x.miss).map(x => x.name).join(", ")}</span>` : ""}
       <span class="a-sub">${readyAdvice()}</span></button>
     <div class="a-tiles" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       ${[["hrv", "HRV", HRV, "ms"], ["rhr", "Resting HR", RHR, "bpm"]].map(([k, l, p, u]) => { const x = p[p.length - 1], b = x ? base(p, x[0]) : null; return `<button type="button" class="a-card" data-sheet="${k}"><span class="a-lbl">${l}</span><span class="a-mid">${x ? r0(x[1]) : "–"}<span class="a-u">${u}</span></span>${spark(p.slice(-30), "var(--accent)")}<span class="a-sub">${b ? "normal " + r0(b.m) : "Apple Health"}</span></button>`; }).join("")}
@@ -5126,9 +5136,7 @@ function planView() {
   </div>
   <div class="a-col">
     <div class="a-card"><div class="a-h" style="padding-right:0"><span class="a-lbl">Current block · Block 2</span><span class="a-sub">${fD(M2S)} – ${fD(M2E)}</span></div><div style="height:8px;border-radius:4px;background:var(--panel2);overflow:hidden"><i style="display:block;height:100%;width:${m2pct.toFixed(0)}%;background:var(--lift)"></i></div><span class="a-sub">Week ${Math.min(10, Math.floor(gap(M2S, TODAY) / 7) + 2)} of 10 · ${Math.max(0, gap(TODAY, M2E))} days left</span></div>
-    <div class="a-card"><span class="a-lbl">Coming up</span><div class="a-list">${checks.map(([t, d]) => `<div class="a-item"><span class="a-dot" style="background:${/PT/.test(t) ? "var(--bad)" : "var(--lift)"}"></span><span>${esc(t)}</span><span class="a-sub">${fD(d)} · ${gap(TODAY, d)} d</span></div>`).join("") || `<div class="a-empty">Nothing scheduled.</div>`}</div></div>
-    ${ptSummary()}
-    <div class="a-card"><span class="a-lbl">PT test</span>${classic(["pt", "ptPrep", "ptb"])}</div>
+    <div class="a-card"><span class="a-lbl">Coming up</span><div class="a-list">${checks.map(([t, d]) => /PT/.test(t) ? `<button type="button" class="a-item a-itemb" data-sheet="ptcalc"><span class="a-dot" style="background:var(--bad)"></span><span>${esc(t)} <span class="a-sub">· calculator ›</span></span><span class="a-sub">${fD(d)} · ${gap(TODAY, d)} d</span></button>` : `<div class="a-item"><span class="a-dot" style="background:var(--lift)"></span><span>${esc(t)}</span><span class="a-sub">${fD(d)} · ${gap(TODAY, d)} d</span></div>`).join("") || `<div class="a-empty">Nothing scheduled.</div>`}</div></div>
     <div class="a-card"><span class="a-lbl">Program</span>${classic(["plrx", "plls", "wf", "s6"])}</div>
     <div class="a-card"><span class="a-lbl">Journal</span>${notes.length ? `<div class="a-list">${notes.map(n => `<div class="a-sub"><b>${esc(n.d ? fD(n.d) : "")}</b> ${esc(n.t || n.text || "")}</div>`).join("")}</div>` : ""}
       <form id="aNote" style="display:flex;gap:8px"><input id="aNoteIn" aria-label="New journal note" placeholder="Add a note…" style="flex:1;min-width:0;font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--rule);background:var(--bg);color:var(--ink)"><button class="a-link" type="submit">Save</button></form></div>
