@@ -58,7 +58,7 @@ Independent checks: the point-in-time quantile sweep (`known_quantiles`) matched
 
 ## Product decisions
 
-- 2026-11-19: Jason hid the Research & Analysis card and the Selected findings from the hub while their purpose is reconsidered. The research site itself (/research/) stays published. `scripts/check_findings.py` and its tests stay so the card can be restored by reverting that PR.
+- 2026-11-19: Jason hid the Research & Analysis card and the Selected findings from the hub while their purpose is reconsidered. The research site itself (/research/) stays published. `scripts/check_findings.py` and its tests stay so the card can be restored by reverting that PR. The same day the remaining research links were hidden too: valuation PR #26 (overview and Validation links) and profile PR #5 (Research row and "Latest research" note); each restores by revert.
 
 ## Ordered backlog
 
