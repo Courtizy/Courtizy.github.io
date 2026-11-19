@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jason C. Courtoy · Decision Models</title>
-  <meta name="description" content="Know the odds before you commit. Open decision models for deals, operations and capital, and the research that tests them, by Jason C. Courtoy.">
+  <meta name="description" content="Know the odds before you commit. Open decision models for operations, capital allocation and deals, by Jason C. Courtoy.">
   <link rel="icon" type="image/svg+xml" href="brand/icons/core.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="brand/icons/core-32.png">
   <link rel="apple-touch-icon" href="brand/icons/core-180.png">
@@ -15,7 +15,7 @@
   </script>
   <style>
     /* The hub is the one page without a .hub-bar: every app page links back here.
-       Layout: tagline, four cards, Shared Core, side project, selected findings, footer. Longer copy lives on each app's Overview. */
+       Layout: tagline, three cards, Shared Core, side project, footer. Research & Analysis and Selected findings are hidden for now (2026-11-19); restore by reverting that change. Longer copy lives on each app's Overview. */
     body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
     .wrap { max-width: 1120px; width: 100%; margin: 0 auto; padding: 0 16px; }
     .eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-secondary); }
@@ -41,8 +41,6 @@
     .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
     /* Delta Readiness is a side project, not one of the brand's three models, so its colors live here rather than in brand.css */
     [data-app="delta"] { --brand-fill: #2F6B3F; --accent: #46C27F; }
-    /* Research & Analysis uses the neutral slate of its own site (research/site/assets/styles.css): it tests the models rather than being one */
-    [data-app="research"] { --brand-fill: var(--core-outline); --accent: var(--ink); }
     @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) [data-app="delta"] { --accent: #1F7A45; } }
     :root[data-theme="light"] [data-app="delta"] { --accent: #1F7A45; }
     .model {
@@ -74,24 +72,6 @@
     .side__q { flex: 1 1 200px; color: var(--ink-secondary); }
     .side__go { font-weight: 500; color: var(--accent); }
 
-    /* Selected findings: short, sourced takeaways from the research studies */
-    .findings { display: grid; gap: 12px; }
-    .findings__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
-    .findings__head h2 { margin: 0; font-size: 1.125rem; }
-    .findings__head a { color: var(--ink-secondary); }
-    .findings__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
-    .finding { display: grid; gap: 6px; align-content: start; padding: 16px 20px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--core-outline); }
-    .finding__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
-    .finding p { margin: 0; }
-    .finding__kpi { display: flex; align-items: baseline; gap: 10px; }
-    .finding__kpi[hidden], .finding .app-status[hidden] { display: none; }
-    .finding__num { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; font-size: 1.75rem; font-weight: 600; line-height: 1; }
-    .finding__label { color: var(--ink-secondary); font-size: 0.875rem; }
-    .finding__text { color: var(--ink-secondary); }
-    .finding__meta { color: var(--ink-secondary); font-size: 0.8125rem; }
-    .finding__meta[hidden] { display: none; }
-    .finding a { color: var(--accent, var(--ink)); font-weight: 500; }
-
     .site-footer { border-top: 1px solid var(--line); }
     .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; padding-top: 12px; padding-bottom: 16px; font-size: 0.75rem; color: var(--ink-secondary); }
     .site-footer b { color: var(--ink); font-weight: 500; }
@@ -115,7 +95,7 @@
   <main class="wrap" id="models">
     <section class="hero">
       <h1>Know the odds before you commit.</h1>
-      <p>Open decision models for deals, operations and capital, and the research that tests them.</p>
+      <p>Open decision models for operations, capital allocation and deals.</p>
     </section>
 
     <div class="models">
@@ -149,16 +129,6 @@
           <p class="model__q">Which projects earn funding under real limits?</p>
           <span class="model__soon">Coming next</span>
         </article>
-        <article class="model model--linked" data-app="research">
-          <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="28" r="14"/><path d="M38 38l14 14"/><path d="M22 32l5-6 4 3 5-7"/></svg></div>
-            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
-          </div>
-          <span class="eyebrow">Evidence · Backtesting</span>
-          <h2>Research &amp; Analysis</h2>
-          <p class="model__q">Do the models hold up against what actually happened?</p>
-          <a class="model__go" href="https://courtizy.github.io/research/" aria-label="Read the Research &amp; Analysis studies">Read the studies <span aria-hidden="true">→</span></a>
-        </article>
     </div>
 
     <div class="core">
@@ -175,22 +145,6 @@
       <span class="side__go">Open <span aria-hidden="true">→</span></span>
     </a>
 
-    <section class="findings" aria-labelledby="findings-title">
-      <div class="findings__head">
-        <h2 id="findings-title">Selected findings</h2>
-        <a href="https://courtizy.github.io/research/" aria-label="All research studies">All studies →</a>
-      </div>
-      <div class="findings__list">
-        <article class="finding">
-          <div class="finding__top"><span class="eyebrow">Study 01 · Forecast accuracy</span></div>
-          <p><b>How far should you trust the first five years of a DCF?</b></p>
-          <div class="finding__kpi" id="f01-kpi" hidden><span class="finding__num" id="f01-num"></span><span class="finding__label" id="f01-label"></span></div>
-          <p class="finding__meta" id="f01-meta" hidden></p>
-          <p class="finding__text">Revenue forecasts built only from what was public on each date, scored against what companies later reported in their SEC filings. Standard ranges held far fewer outcomes than they claimed; ranges calibrated on past forecast misses held about what they promised.</p>
-          <a id="f01-link" href="https://courtizy.github.io/research/notebooks/forecast-accuracy.html#how-wide-does-an-honest-range-have-to-be" aria-label="Read Study 01: how wide an honest forecast range has to be">Read the study →</a>
-        </article>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
@@ -201,32 +155,6 @@
   </footer>
 
   <script>
-    // Study 01's headline number comes from the research site's published JSON, never typed here.
-    // Contract (checked in CI by scripts/check_findings.py): version >= 2, a headline KPI labelled
-    // "...calibrated 80% range...", and ranges[h=3].calibrated["80"] with n, share, below, above.
-    // The KPI shows only when its value agrees (within rounding) with the structured share it summarises; otherwise the card
-    // keeps its text and link and shows no number, so a missing or changed file never shows a stale figure.
-    const pct = (x) => Math.round(x * 100) + "%";
-    fetch("/research/data/forecast_accuracy.json")
-      .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then((d) => {
-        const k = (d.headline?.kpis || []).find((x) => /calibrated 80% range/.test(x.label));
-        const r3 = (d.ranges || []).find((x) => x.h === 3);
-        const c = r3?.calibrated?.["80"];
-        if (!(Number(d.version) >= 2 && k && c && Math.abs(parseFloat(k.value) - c.share * 100) <= 0.5)) return;
-        document.getElementById("f01-num").textContent = k.value;
-        document.getElementById("f01-label").textContent = k.label.replace(/^Outcomes/, "of outcomes");
-        const first = d.sample?.range_test?.first_base_year;
-        document.getElementById("f01-meta").textContent =
-          `Out of sample: ${c.n.toLocaleString("en-US")} forecasts from ${r3.companies} companies` +
-          (first ? `, base years ${first} on` : "") +
-          `. Median range ${pct(c.below)} below to ${pct(c.above)} above the forecast.` +
-          ` Study 01 v${d.version}, data as of ${d.as_of}.`;
-        document.getElementById("f01-kpi").hidden = false;
-        document.getElementById("f01-meta").hidden = false;
-      })
-      .catch(() => {});
-
     document.getElementById("theme-toggle").addEventListener("click", () => {
       const root = document.documentElement;
       const current = root.dataset.theme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
