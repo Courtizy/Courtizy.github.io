@@ -14,74 +14,179 @@
     try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
   <style>
-    /* The hub is the one page without a .hub-bar: every app page links back here.
-       Layout: tagline, three cards, Shared Core, side project, footer. Research & Analysis and Selected findings are hidden for now (2026-11-19); restore by reverting that change. Longer copy lives on each app's Overview. */
+    /* Homepage only. Everything here is inline in index.html, so none of it reaches the app pages, which load brand.css alone.
+       Layout (2026-11-19 redesign): question-led panels. Each live model gets one rounded panel, side by side on desktop and stacked
+       on a phone: its decision question is the link, and a small example result from the model's own published JSON sits
+       under it (home/previews.js).
+       Planned work sits in a quieter "Next" list; Delta Readiness is a separate side-project line.
+       Research & Analysis and Selected findings stay hidden (PR #19); restore by reverting that change. */
     body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
     .wrap { max-width: 1120px; width: 100%; margin: 0 auto; padding: 0 16px; }
-    .eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-secondary); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .label { margin: 0; font-size: 0.8125rem; font-weight: 500; color: var(--ink-secondary); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
+    /* ---- Top bar: Core mark, name, quiet product label, profiles, theme ---- */
     .topbar { border-bottom: 1px solid var(--line); }
-    .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding-top: 6px; padding-bottom: 6px; }
-    .topbar__name { font-weight: 700; text-decoration: none; color: var(--ink); }
+    .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; padding-block: 6px; }
+    .who { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: var(--ink); }
+    .who svg { width: 26px; height: 26px; flex-shrink: 0; }
+    .who b { font-weight: 700; }
+    .who span { color: var(--ink-secondary); font-size: 0.875rem; }
+    .who span::before { content: "·"; margin-right: 10px; }
     .topbar nav { display: flex; align-items: center; gap: 4px 18px; font-size: 0.9375rem; }
     .topbar nav a { color: var(--ink-secondary); text-decoration: none; padding: 12px 0; }
     .topbar nav a:hover { color: var(--ink); }
-    .theme-toggle {
-      min-width: 44px; min-height: 44px; display: inline-grid; place-items: center;
-      background: transparent; color: var(--ink-secondary); border: 1px solid var(--line); cursor: pointer;
-    }
+    .theme-toggle { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; background: transparent; color: var(--ink-secondary); border: 1px solid var(--line); cursor: pointer; }
     .theme-toggle:hover { color: var(--ink); border-color: var(--ink-secondary); }
 
-    main.wrap { flex: 1; display: flex; flex-direction: column; justify-content: safe center; gap: 28px; padding-block: 40px 24px; }
-    .hero { display: grid; gap: 10px; }
-    @media (max-width: 600px) { main.wrap { padding-block: 28px 24px; gap: 20px; } }
-    .hero h1 { margin: 0; font-size: clamp(2.125rem, 5vw, 3.25rem); line-height: 1.05; letter-spacing: -0.02em; }
-    .hero p { margin: 0; font-size: clamp(1rem, 2vw, 1.125rem); color: var(--ink-secondary); }
+    main.wrap { flex: 1; display: flex; flex-direction: column; gap: 26px; padding-block: 32px 28px; }
 
-    .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
+    /* ---- Hero: one line, one sentence ---- */
+    .hero { display: grid; gap: 10px; }
+    .hero h1 { margin: 0; font-size: clamp(2.125rem, 1.2rem + 3.3vw, 3.5rem); line-height: 1.04; letter-spacing: -0.025em; text-wrap: balance; }
+    .hero p { margin: 0; max-width: 60ch; font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem); color: var(--ink-secondary); }
+
+    /* ---- Live models: question-led rows ---- */
+    .live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 48px; }
+    .live > .label { grid-column: 1 / -1; padding-bottom: 10px; }
+    .row { position: relative; display: grid; grid-template-rows: auto 1fr; gap: 16px; padding: 18px 0 8px; }
+    @supports (grid-template-rows: subgrid) {   /* line the two previews up across the columns */
+      .live { grid-template-rows: auto auto auto; }
+      .row { grid-row: span 2; grid-template-rows: subgrid; }
+    }
+    .row__id { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 0.9375rem; font-weight: 500; }
+    .row__id .brand-tile { width: 32px; height: 32px; }
+    .row__id .brand-tile svg { width: 20px; height: 20px; }
+    .row__id small { font-size: 0.8125rem; font-weight: 400; color: var(--ink-secondary); }
+    .row__link { display: block; color: var(--ink); text-decoration: none; }
+    .row__link::after { content: ""; position: absolute; inset: 0; }   /* the whole row is the link */
+    .row__q { margin: 0; font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem); line-height: 1.18; letter-spacing: -0.01em; font-weight: 700; text-wrap: balance; }
+    .row__what { margin: 10px 0 0; color: var(--ink-secondary); max-width: 44ch; }
+    .row__go { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; min-height: 24px; font-weight: 500; color: var(--accent); }
+    .row__go span { transition: transform 0.15s ease; }
+    .row:hover .row__q { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--brand-fill); }
+    .row:hover .row__go span { transform: translateX(3px); }
+    .row__link:focus-visible { outline: none; }
+    .row:has(.row__link:focus-visible) { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+    /* ---- Example previews (filled by home/previews.js; numbers come from each model's own JSON) ---- */
+    .pv { min-height: 236px; display: flex; flex-direction: column; gap: 4px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .pv[aria-busy="true"]::before { content: "Loading the example…"; color: var(--ink-secondary); font-size: 0.875rem; }
+    .pv__answer { margin: 0; font-size: 1rem; color: var(--ink-secondary); }
+    .pv__answer .num { font-size: 1.75rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; margin-right: 2px; }
+    .pv__caption, .pv__note, .pv__legend, .pv__fallback { margin: 0; font-size: 0.8125rem; color: var(--ink-secondary); }
+    .pv__note { margin-top: 8px; }
+    .pv__fallback { padding-top: 6px; }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* Valuation: football field */
+    .ff { display: grid; gap: 7px; margin-top: 12px; font-size: 0.8125rem; }
+    .ff__row, .ff__axis { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) 5.5em; align-items: center; gap: 12px; }
+    .ff__label { color: var(--ink-secondary); white-space: nowrap; }
+    .ff__track { position: relative; height: 14px; }
+    .ff__bar { position: absolute; top: 3px; height: 8px; background: var(--series-1); }
+    .ff__mid { position: absolute; top: 0; width: 2px; height: 14px; margin-left: -1px; background: var(--ink); }
+    .ff__price { position: absolute; top: -4px; bottom: -4px; border-left: 2px dotted var(--ink-secondary); margin-left: -1px; }
+    .ff__range { text-align: right; color: var(--ink-secondary); font-family: var(--font-mono); font-size: 0.75rem; }
+    .ff__row--total .ff__label, .ff__row--total .ff__range { color: var(--ink); font-weight: 600; }
+    .ff__row--total .ff__bar { top: 1px; height: 12px; }
+    .ff__axis .ff__track { height: 16px; }
+    .ff__tick { position: absolute; top: 0; transform: translateX(-50%); color: var(--ink-secondary); font-family: var(--font-mono); font-size: 0.6875rem; white-space: nowrap; }
+    .ff__tick:first-child { transform: none; }
+    .ff__tick--end { transform: translateX(-100%); }
+
+    /* Turn Pattern Sustainability: aircraft ready vs needed by day */
+    .days { display: grid; grid-template-columns: 1.6em repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 12px; max-width: 440px; }
+    .days__axis { display: flex; flex-direction: column; justify-content: space-between; height: 76px; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-secondary); text-align: right; line-height: 1; }
+    .days__col { display: grid; justify-items: center; gap: 4px; font-size: 0.8125rem; }
+    .days__plot { position: relative; width: 100%; height: 76px; border-bottom: 1px solid var(--line); }
+    .days__bar { position: absolute; left: 50%; width: 12px; min-height: 2px; margin-left: -6px; margin-bottom: -1px; background: var(--series-1); }
+    .days__mid { position: absolute; left: 50%; width: 20px; height: 2px; margin: 0 0 -1px -10px; background: var(--ink); }
+    .days__need { position: absolute; left: 10%; right: 10%; border-top: 2px dashed var(--ink-secondary); }
+    .days__day { color: var(--ink-secondary); }
+    .days__flag { min-height: 1.2em; font-size: 0.6875rem; font-weight: 600; color: var(--status-warning-text); }
+    .days__flag:not(:empty)::before { content: "! "; }
+    .days__col--flag .days__day { color: var(--ink); font-weight: 600; }
+    .pv__legend { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; margin-top: 6px; }
+    .pv__legend > span { white-space: nowrap; }
+    .key { display: inline-block; vertical-align: middle; }
+    .key--bar { width: 8px; height: 12px; background: var(--series-1); }
+    .key--mid { width: 12px; height: 2px; background: var(--ink); }
+    .key--need { width: 14px; border-top: 2px dashed var(--ink-secondary); }
+
+    /* ---- Next: planned work, deliberately quieter than the live rows (no link, no fill, muted mark) ---- */
+    .next { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 10px 32px; align-items: start; padding-top: 14px; border-top: 1px solid var(--line); }
+    .next > .label { padding-top: 2px; }
+    .plan { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 10px; margin: 0; font-size: 0.875rem; color: var(--ink-secondary); }
+    .plan svg { width: 22px; height: 22px; color: var(--ink-muted); grid-row: span 2; }
+    .plan b { color: var(--ink); font-weight: 500; }
+    .plan em { font-style: normal; }
+
+    /* ---- Side project: one quiet line ---- */
+    .side { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; align-self: start; min-height: 44px; color: var(--ink-secondary); text-decoration: none; font-size: 0.875rem; }
+    .side__tile { display: inline-grid; place-items: center; width: 24px; height: 24px; background: var(--brand-fill); color: #fff; }
+    .side__tile svg { width: 14px; height: 14px; }
+    .side b { color: var(--ink); font-weight: 500; }
+    .side__go { color: var(--accent); font-weight: 500; }
+    .side:hover b { text-decoration: underline; text-underline-offset: 3px; }
     /* Delta Readiness is a side project, not one of the brand's three models, so its colors live here rather than in brand.css */
     [data-app="delta"] { --brand-fill: #2F6B3F; --accent: #46C27F; }
     @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) [data-app="delta"] { --accent: #1F7A45; } }
     :root[data-theme="light"] [data-app="delta"] { --accent: #1F7A45; }
-    .model {
-      position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0;
-      background: var(--panel); border: 1px solid var(--line); border-top: 6px solid var(--brand-fill); padding: 20px;
-    }
-    .model--linked:hover { border-color: var(--ink-secondary); border-top-color: var(--brand-fill); }
-    .model__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .model .brand-tile { width: 44px; height: 44px; }
-    .model .brand-tile svg { width: 26px; height: 26px; }
-    .model h2 { margin: 0; font-size: 1.3125rem; line-height: 1.2; }
-    .model__q { margin: 0; color: var(--ink-secondary); }
-    .model__go { margin-top: auto; padding-top: 8px; font-weight: 500; color: var(--accent); text-decoration: none; }
-    .model__go::after { content: ""; position: absolute; inset: 0; }   /* whole card is the link */
-    .model__go:focus-visible { outline: none; }
-    .model--linked:has(.model__go:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .model__soon { margin-top: auto; padding-top: 8px; color: var(--ink-secondary); }
-
-    .core { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 20px; border: 2px solid var(--core-outline); }
-    .core svg { width: 26px; height: 26px; flex-shrink: 0; }
-    .core__q { flex: 1 1 240px; color: var(--ink-secondary); }
-
-    /* Side project: one quiet line under the core, not a fourth model */
-    .side { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 8px 20px; min-height: 44px; border: 1px solid var(--line); border-left: 4px solid var(--brand-fill); color: var(--ink); text-decoration: none; }
-    .side:hover { border-color: var(--ink-secondary); border-left-color: var(--brand-fill); }
-    .side:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    .side__tile { display: inline-grid; place-items: center; width: 28px; height: 28px; background: var(--brand-fill); color: #fff; }
-    .side__tile svg { width: 16px; height: 16px; }
-    .side__q { flex: 1 1 200px; color: var(--ink-secondary); }
-    .side__go { font-weight: 500; color: var(--accent); }
 
     .site-footer { border-top: 1px solid var(--line); }
-    .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; padding-top: 12px; padding-bottom: 16px; font-size: 0.75rem; color: var(--ink-secondary); }
+    .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 24px; padding-block: 10px 14px; font-size: 0.75rem; color: var(--ink-secondary); }
     .site-footer b { color: var(--ink); font-weight: 500; }
-    .site-footer a { color: var(--ink-secondary); }
+    .site-footer a { color: var(--ink-secondary); display: inline-block; padding: 12px 0; }
+
+
+    /* ---- Rounded shape (2026-11-19, Jason's ask): the suite's shape tokens from brand.css (after Delta Readiness):
+       live models as soft panels; tiles, bars, toggle and focus rings rounded. ---- */
+    .live { gap: 20px; }
+    .row { padding: 22px 24px 18px; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--panel); box-shadow: var(--shadow-card); overflow: hidden; }
+    .row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--brand-fill); }
+    .row:hover { border-color: var(--ink-secondary); }
+    .row:has(.row__link:focus-visible) { outline-offset: 3px; }
+    .side__tile { border-radius: 8px; }
+    .row .brand-tile { border-radius: 10px; }
+    .theme-toggle { border-radius: var(--radius-control); }
+    .ff__bar, .days__bar, .key--bar { border-radius: 999px; }
+    .ff__mid, .days__mid { border-radius: 2px; }
+    .side { padding: 6px 14px 6px 8px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--panel); box-shadow: var(--shadow-card); }
+    .side:hover { border-color: var(--ink-secondary); }
+    a:focus-visible, button:focus-visible { border-radius: 8px; }
+    .side:focus-visible { border-radius: 999px; }
+
+    @media (max-width: 860px) {
+      .live { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+      .row { grid-row: auto; grid-template-rows: auto auto; }
+      .live { gap: 16px; }
+      .pv { min-height: 0; }
+      .next { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    }
+    @media (max-width: 600px) {
+      main.wrap { padding-block: 24px 24px; gap: 24px; }
+      .who span { display: none; }
+      .who { gap: 8px; }
+      .topbar nav { gap: 4px 12px; font-size: 0.875rem; }
+      .who b { font-size: 0.9375rem; }
+      .hero h1 { font-size: 2.125rem; }
+      .row { padding: 18px 16px 14px; border-radius: 16px; }
+      .side { border-radius: 16px; }
+      .row__what { font-size: 0.9375rem; }
+      .ff__row, .ff__axis { grid-template-columns: 7.6em minmax(0, 1fr) 5em; gap: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .row__go span { transition: none; } .row:hover .row__go span { transform: none; } }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap">
-      <a class="topbar__name" href="./">Jason C. Courtoy</a>
+      <a class="who" href="./">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="12" fill="var(--panel)" stroke="var(--core-outline)" stroke-width="3"/><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" transform="translate(9.6 9.6) scale(0.7)"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></g></svg>
+        <b>Jason C. Courtoy</b><span>Decision Models</span>
+      </a>
       <nav aria-label="Profiles">
         <a href="https://www.linkedin.com/in/jasoncourtoy/">LinkedIn</a>
         <a href="https://github.com/Courtizy">GitHub</a>
@@ -92,59 +197,65 @@
     </div>
   </header>
 
-  <main class="wrap" id="models">
+  <main class="wrap">
     <section class="hero">
       <h1>Know the odds before you commit.</h1>
-      <p>Open decision models for operations, capital allocation and deals.</p>
+      <p>I build open decision models for operations, capital allocation and deals.</p>
     </section>
 
-    <div class="models">
-        <article class="model model--linked" data-app="valuation">
-          <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg></div>
-            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
-          </div>
-          <span class="eyebrow">Deals · DCF · Comparables</span>
-          <h2>Valuation Model</h2>
-          <p class="model__q">What is the business worth, and how sure are we?</p>
-          <a class="model__go" href="https://courtizy.github.io/valuation/" aria-label="Open the Valuation Model">Open the model <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="model model--linked" data-app="tps">
-          <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M52 32a20 20 0 1 1-6-14.3"/><path d="M48 8v10H38"/><circle cx="32" cy="32" r="4" fill="currentColor"/></svg></div>
-            <span class="app-status app-status--live"><span class="app-status__dot"></span>Live</span>
-          </div>
-          <span class="eyebrow">Operations · Simulation</span>
-          <h2>Turn Pattern Sustainability</h2>
-          <p class="model__q">Can the fleet meet the flying schedule?</p>
-          <a class="model__go" href="https://courtizy.github.io/TPS-Monte-Carlo-Simulation/" aria-label="Open Turn Pattern Sustainability">Open the model <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="model" data-app="roi">
-          <div class="model__top">
-            <div class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 52V40"/><path d="M26 52V30"/><path d="M40 52V22"/><path d="M10 26l14-10 10 6 18-12"/><path d="M44 10h8v8"/></svg></div>
-            <span class="app-status"><span class="app-status__dot"></span>Planned</span>
-          </div>
-          <span class="eyebrow">Capital · Optimization</span>
-          <h2>Project ROI</h2>
-          <p class="model__q">Which projects earn funding under real limits?</p>
-          <span class="model__soon">Coming next</span>
-        </article>
-    </div>
+    <section class="live" aria-labelledby="live-h">
+      <h2 class="label" id="live-h">Two models you can use today</h2>
 
-    <div class="core">
-      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></svg>
-      <strong>Shared Core</strong>
-      <span class="core__q">How likely is each outcome? A shared Monte Carlo engine is planned; today each model runs its own.</span>
-      <span class="app-status"><span class="app-status__dot"></span>Planned</span>
-    </div>
+      <article class="row" data-app="valuation">
+        <div>
+          <p class="row__id">
+            <span class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg></span>
+            Valuation Model <small>Deals</small>
+          </p>
+          <a class="row__link" href="https://courtizy.github.io/valuation/" aria-labelledby="val-q val-go">
+            <h3 class="row__q" id="val-q">What is a public company worth across plausible assumptions?</h3>
+            <p class="row__what">Builds the financials from SEC filings, values the company three ways, and simulates the range.</p>
+            <span class="row__go" id="val-go">Explore the Valuation Model <span aria-hidden="true">→</span></span>
+          </a>
+        </div>
+        <div class="pv" data-preview="valuation" aria-busy="true"></div>
+      </article>
+
+      <article class="row" data-app="tps">
+        <div>
+          <p class="row__id">
+            <span class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M52 32a20 20 0 1 1-6-14.3"/><path d="M48 8v10H38"/><circle cx="32" cy="32" r="4" fill="currentColor"/></svg></span>
+            Turn Pattern Sustainability <small>Operations</small>
+          </p>
+          <a class="row__link" href="https://courtizy.github.io/TPS-Monte-Carlo-Simulation/" aria-labelledby="tps-q tps-go">
+            <h3 class="row__q" id="tps-q">How often can the fleet fly the weekly schedule?</h3>
+            <p class="row__what">Runs the same flying week thousands of times with random breaks and repairs, and shows where it runs tight.</p>
+            <span class="row__go" id="tps-go">Explore the fleet simulation <span aria-hidden="true">→</span></span>
+          </a>
+        </div>
+        <div class="pv" data-preview="tps" aria-busy="true"></div>
+      </article>
+    </section>
+
+    <section class="next" aria-labelledby="next-h">
+      <h2 class="label" id="next-h">Planned, not built yet</h2>
+      <p class="plan">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 52V40"/><path d="M26 52V30"/><path d="M40 52V22"/><path d="M10 26l14-10 10 6 18-12"/><path d="M44 10h8v8"/></svg>
+        <b>Project ROI</b>
+        <em>Which projects earn funding under real limits?</em>
+      </p>
+      <p class="plan">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" aria-hidden="true"><path d="M32 6l22 13v26L32 58 10 45V19z"/><path d="M32 22l9 5v10l-9 5-9-5V27z"/></svg>
+        <b>Shared Core</b>
+        <em>One Monte Carlo engine for every model. Today each model runs its own.</em>
+      </p>
+    </section>
+
     <a class="side" data-app="delta" href="https://courtizy.github.io/fitness/">
-      <span class="side__tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"><path d="M32 10L54 52H10z"/></svg></span>
-      <span class="eyebrow">Side project</span>
-      <strong>Delta Readiness</strong>
-      <span class="side__q">Am I ready for the PT test?</span>
+      <span class="side__tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor"><path d="M32 10L54 52H10z"/></svg></span>
+      Side project: <b>Delta Readiness</b> asks “Am I ready for the PT test?”
       <span class="side__go">Open <span aria-hidden="true">→</span></span>
     </a>
-
   </main>
 
   <footer class="site-footer">
@@ -163,5 +274,6 @@
       try { localStorage.setItem("theme", next); } catch (e) {}
     });
   </script>
+  <script src="home/previews.js" defer></script>
 </body>
 </html>

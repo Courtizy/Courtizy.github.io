@@ -1,0 +1,94 @@
+{
+ "id": "synthetic_week__baseline__spares",
+ "unit_name": "Synthetic 2-go unit",
+ "scenario_label": "Baseline week",
+ "simulation": {
+  "runs": 2000,
+  "seed": 20261004
+ },
+ "kpis": {
+  "weeks_meeting_every_requirement": 0.935,
+  "ci95": [
+   0.9233400064867132,
+   0.9449921623785968
+  ],
+  "sortie_compliance": 0.9989615384615385,
+  "available_median": 12.0,
+  "ready_next_monday_median": 10.0,
+  "recovery_target": 8,
+  "adds_2407_per_week": 0
+ },
+ "binding": {
+  "day": "Next Mon",
+  "p_day_met": 0.973,
+  "requirement": "recovery next Monday"
+ },
+ "days": [
+  {
+   "day": "Mon",
+   "sorties_planned": 9,
+   "needed": 8,
+   "p_day_met": 1.0,
+   "available_p10": 13.0,
+   "available_p50": 13.0,
+   "available_p90": 13.0,
+   "status": "good",
+   "status_label": "On track"
+  },
+  {
+   "day": "Tue",
+   "sorties_planned": 9,
+   "needed": 8,
+   "p_day_met": 1.0,
+   "available_p10": 10.0,
+   "available_p50": 12.0,
+   "available_p90": 13.0,
+   "status": "good",
+   "status_label": "On track"
+  },
+  {
+   "day": "Wed",
+   "sorties_planned": 8,
+   "needed": 6,
+   "p_day_met": 0.9785,
+   "available_p10": 10.0,
+   "available_p50": 12.0,
+   "available_p90": 13.0,
+   "status": "warning",
+   "status_label": "At risk"
+  },
+  {
+   "day": "Thu",
+   "sorties_planned": 7,
+   "needed": 6,
+   "p_day_met": 0.9895,
+   "available_p10": 9.0,
+   "available_p50": 11.0,
+   "available_p90": 12.0,
+   "status": "good",
+   "status_label": "On track"
+  },
+  {
+   "day": "Fri",
+   "sorties_planned": 6,
+   "needed": 5,
+   "p_day_met": 0.993,
+   "available_p10": 9.0,
+   "available_p50": 11.0,
+   "available_p90": 12.0,
+   "status": "good",
+   "status_label": "On track"
+  },
+  {
+   "day": "Next Mon",
+   "sorties_planned": 0,
+   "needed": 8,
+   "p_day_met": 0.973,
+   "available_p10": 8.0,
+   "available_p50": 10.0,
+   "available_p90": 12.0,
+   "status": "warning",
+   "status_label": "At risk"
+  }
+ ]
+}

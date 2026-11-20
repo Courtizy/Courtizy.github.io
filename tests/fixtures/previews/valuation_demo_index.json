@@ -1,0 +1,14 @@
+{
+ "companies": [
+  {
+   "ticker": "DEMO",
+   "name": "Demo Manufacturing Co. (synthetic)",
+   "runs": [
+    {
+     "as_of": "2026-09-30",
+     "comparison": "DEMO/2026-09-30/comparison.json"
+    }
+   ]
+  }
+ ]
+}
