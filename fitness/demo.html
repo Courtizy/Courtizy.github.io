@@ -2649,13 +2649,26 @@ function ptTrials() {
   const auto = ST ? ST.acts.filter(a => a[7] === 1 && a[1] === "run" && a[2] >= 2800).map(a => [a[0], Math.round(riegel(a)), "Strava"]) : [];
   return [...auto, ...PT.tts.map(t => [t[0], t[1], "manual"])].sort((a, b) => a[0].localeCompare(b[0]));
 }
+/* runs alone: mean Riegel equivalent of your best three runs of 2,500 m+ in the 8 weeks to endIso */
+function ptRunsOnly(endIso) {
+  const t = tms(endIso), lo = t - 56 * 864e5;
+  const R_ = ST.acts.filter(a => a[1] === "run" && a[2] >= 2500 && tms(a[0]) <= t && tms(a[0]) > lo && paceOf(a)).map(riegel).sort((a, b) => a - b);
+  return R_.length ? { v: mean(R_.slice(0, 3)), n: R_.length } : null;
+}
+/* calibration: training runs read faster than a real effort (moving time, short stops, GPS). The latest trial within a
+   year sets the offset: trial time minus what the runs alone said that day. Before any trial, no offset. */
+function ptCalib(endIso) {
+  const t = tms(endIso), tt = ptTrials().filter(x => tms(x[0]) <= t && tms(x[0]) > t - 365 * 864e5), last = tt[tt.length - 1];
+  if (!last) return null;
+  const r = ptRunsOnly(last[0]); return r ? { off: last[1] - r.v, date: last[0], trial: last[1], runs: r.v } : null;
+}
 function ptEstimate(endIso) {
   const t = tms(endIso), lo = t - 56 * 864e5;
   const tt = ptTrials().filter(x => tms(x[0]) <= t && tms(x[0]) > lo);
   if (tt.length) { const last = tt[tt.length - 1]; return { v: last[1], src: "trial", date: last[0] }; }
-  const R_ = ST.acts.filter(a => a[1] === "run" && a[2] >= 2500 && tms(a[0]) <= t && tms(a[0]) > lo && paceOf(a)).map(riegel).sort((a, b) => a - b);
-  if (!R_.length) return null;
-  const top = R_.slice(0, 3); return { v: mean(top), src: "runs", n: R_.length };
+  const r = ptRunsOnly(endIso); if (!r) return null;
+  const c = ptCalib(endIso);
+  return { v: r.v + (c ? c.off : 0), src: "runs", n: r.n, cal: c };
 }
 function ptSeries() {
   const last = ST.last, out = [];
@@ -2663,14 +2676,47 @@ function ptSeries() {
   for (let t = end; t >= start; t -= 7 * 864e5) { const iso = new Date(t).toISOString().slice(0, 10), e = ptEstimate(iso); if (e) out.unshift([iso, e.v]); }
   return out;
 }
+/* backtest (Sprint 5): from every week of your history, forecast the estimate h weeks later two ways, holding today's
+   estimate or extending the 9-week trend, and keep the errors. Holding beat the trend at every horizon on Jason's data,
+   so the projection holds today's estimate and the range is the middle 80% of the holding errors at that distance. */
+const PT_H = [2, 4, 6, 8, 12, 16, 26];
+let PT_BT = null;
+function ptTrendAt(t) {
+  const pts = []; for (let k = 9; k >= 0; k--) { const x = t - 7 * k * 864e5, e = ptEstimate(new Date(x).toISOString().slice(0, 10)); if (e) pts.push([x, e.v]); }
+  if (pts.length < 4) return null;
+  const xs = pts.map(p => p[0] / 864e5 / 7), ys = pts.map(p => p[1]), mx = mean(xs), my = mean(ys), den = xs.reduce((s, x) => s + (x - mx) ** 2, 0);
+  return den ? Math.max(-15, Math.min(15, xs.reduce((s, x, k) => s + (x - mx) * (ys[k] - my), 0) / den)) : null;
+}
+function ptBacktest() {
+  const key = ST.last + "|" + ST.acts.length + "|" + ptTrials().map(x => x[0] + x[1]).join();
+  if (PT_BT && PT_BT.key === key) return PT_BT;
+  const hold = {}, trend = {}; PT_H.forEach(h => { hold[h] = []; trend[h] = []; });
+  const end = tms(ST.last), memo = {}, E = x => { const iso = new Date(x).toISOString().slice(0, 10); if (!(iso in memo)) { const e = ptEstimate(iso); memo[iso] = e ? e.v : null; } return memo[iso]; };
+  for (let t = tms(ST.first) + 70 * 864e5; t <= end; t += 7 * 864e5) {
+    const now = E(t); if (now == null) continue; const sl = ptTrendAt(t);
+    for (const h of PT_H) { const tg = t + 7 * h * 864e5; if (tg > end) continue; const y = E(tg); if (y == null) continue;
+      hold[h].push(now - y); if (sl != null) trend[h].push(now + sl * Math.min(PT_TREND_WK, h) - y); }
+  }
+  PT_H.forEach(h => { hold[h].sort((a, b) => a - b); trend[h].sort((a, b) => a - b); });
+  return PT_BT = { key, hold, trend };
+}
+const ptQ = (a, p) => a[Math.round(p * (a.length - 1))];
+const ptMAE = a => a.length ? mean(a.map(Math.abs)) : null;
+/* likely range at wk weeks out: the middle 80% of past holding errors at the nearest tested distance (12+ forecasts).
+   Shifting the point by the median past change did not help in a walk-forward test, so the point stays at today's estimate. */
+function ptRange(wk) {
+  const B = ptBacktest(), ok = PT_H.filter(h => B.hold[h].length >= 12); if (!ok.length) return null;
+  const h = ok.find(x => x >= Math.max(1, wk)) || ok[ok.length - 1], e = B.hold[h];
+  return { lo: -ptQ(e, .9), mid: -ptQ(e, .5), hi: -ptQ(e, .1), n: e.length, h, mae: ptMAE(e), maeTrend: ptMAE(B.trend[h]) };
+}
 function ptProjection(S) {
   const pts = S.filter(p => tms(p[0]) > tms(S[S.length - 1][0]) - 63 * 864e5); if (pts.length < 4) return null;
   const xs = pts.map(p => tms(p[0]) / 864e5 / 7), ys = pts.map(p => p[1]), mx = mean(xs), my = mean(ys);
   const sl = xs.reduce((s, x, k) => s + (x - mx) * (ys[k] - my), 0) / xs.reduce((s, x) => s + (x - mx) ** 2, 0);
-  // extend the trend no further than the ~9 weeks it was fitted on, then hold it flat
-  const now = S[S.length - 1], wk = Math.min(PT_TREND_WK, Math.max(0, (tms(ptDue()) - tms(now[0])) / 864e5 / 7));
-  const slope = Math.max(-15, Math.min(15, sl)); // cap at 15 s/week either way
-  return { slope, at: now[1] + slope * wk, wk, capped: slope !== sl };
+  const now = S[S.length - 1], wk = Math.max(0, (tms(ptDue()) - tms(now[0])) / 864e5 / 7);
+  const slope = Math.max(-15, Math.min(15, sl)), r = ptRange(wk);
+  // the trend is shown, not used: in the backtest, holding today's estimate beat extending the trend
+  return { slope, at: now[1], wk, capped: slope !== sl, held: true, lo: r ? Math.min(now[1], now[1] + r.lo) : null, hi: r ? Math.max(now[1], now[1] + r.hi) : null, r };
 }
 function ptSave() { if (DATA) DATA.pt = PT; persist({ pt: PT }); }
 (() => {
@@ -2688,7 +2734,7 @@ function renderPT() {
   // readiness bar
   { const svg = document.getElementById("ptBar"); svg.innerHTML = ""; const W = 960, L = 30, R = 30, H = 110, y0 = 46, bh = 22;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "620px"; svg.style.width = "100%";
-    const slow = Math.max(PT_STD.min + 75, (est ? est.v : 0) + 30, PT.goal + 30), fast = Math.min(PT_STD.max - 45, est ? est.v - 30 : 1e9, PT.goal - 30);
+    const slow = Math.max(PT_STD.min + 75, (est ? est.v : 0) + 30, PT.goal + 30, proj && proj.hi != null && days > 0 ? Math.min(proj.hi, PT_STD.min + 300) + 20 : 0), fast = Math.min(PT_STD.max - 45, est ? est.v - 30 : 1e9, PT.goal - 30, proj && proj.lo != null && days > 0 ? proj.lo - 20 : 1e9);
     const x = v => L + (slow - v) / (slow - fast) * (W - L - R);
     el("rect", { x: x(slow), y: y0, width: x(PT_STD.min) - x(slow), height: bh, fill: "var(--zone-over)" }, svg);
     el("rect", { x: x(slow), y: y0, width: x(PT_STD.min) - x(slow), height: bh, fill: "url(#hatch)" }, svg);
@@ -2698,6 +2744,7 @@ function renderPT() {
     tick(PT_STD.min, `21:16 pass`, false); tick(PT_STD.max, `13:56 max`, false);
     el("line", { x1: x(PT.goal), x2: x(PT.goal), y1: y0 - 6, y2: y0 + bh + 6, stroke: "var(--ink)", "stroke-width": 3 }, svg);
     txt(svg, x(PT.goal), y0 + bh + 34, `goal ${mmss(PT.goal)}`, { "text-anchor": "middle", "font-size": 12, "font-weight": 700 });
+    if (proj && days > 0 && proj.lo != null) { el("rect", { x: x(proj.hi), y: y0 + bh / 2 - 4, width: Math.max(2, x(proj.lo) - x(proj.hi)), height: 8, rx: 4, fill: "var(--ink)", opacity: .28 }, svg); }
     if (proj && days > 0) { el("circle", { cx: x(proj.at), cy: y0 + bh / 2, r: 7, fill: "var(--panel)", stroke: "var(--ink)", "stroke-width": 2, "stroke-dasharray": "3 2" }, svg); }
     if (est) { el("circle", { cx: x(est.v), cy: y0 + bh / 2, r: 9, fill: "var(--ink)" }, svg); txt(svg, x(est.v), y0 - 12, `now ${mmss(est.v)}${est.src === "trial" ? " (trial)" : " (est.)"}`, { "text-anchor": "middle", "font-size": 13, "font-weight": 700 }); }
     txt(svg, L, 16, "← slower", { "font-size": 11, fill: "var(--muted)" }); txt(svg, W - R, 16, "faster →", { "text-anchor": "end", "font-size": 11, fill: "var(--muted)" }); }
@@ -2708,13 +2755,13 @@ function renderPT() {
       <div><b>${est ? pace(est.v) + "/mi" : "–"}</b><span>current ${est && est.src === "trial" ? "time-trial" : "estimated race"} pace</span></div>
       <div><b>${gap == null ? "–" : (gap <= 0 ? mmss(-gap) + " ahead" : mmss(gap) + " behind")}</b><span>${gap == null ? "" : `${Math.abs(Math.round(gap / 2))} s per mile ${gap <= 0 ? "faster" : "slower"} than goal pace`}</span></div>
       <div><b>${pace(PT_STD.min)} · ${pace(PT_STD.max)}</b><span>pass · max-points pace per mile</span></div>
-      <div><b>${days > 0 ? days + " days" : "Test day passed"}</b><span>to ${fmtDate(ptDue())}${proj && days > 0 ? `; on trend ≈ ${mmss(proj.at)}` : ""}</span></div>`; }
+      <div><b>${days > 0 ? days + " days" : "Test day passed"}</b><span>to ${fmtDate(ptDue())}${proj && days > 0 ? (proj.lo != null ? `; likely ${mmss(proj.lo)}–${mmss(proj.hi)}` : `; ≈ ${mmss(proj.at)} if nothing changes`) : ""}</span></div>`; }
   // trend chart
   { const svg = document.getElementById("ptTrend"); svg.innerHTML = ""; const W = 960, L = 56, R = 70, T = 14, B = 30, H = 300;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.minWidth = "700px"; svg.style.width = "100%";
     if (!S.length) { txt(svg, L, 40, "No runs of 1.5+ miles to estimate from yet.", { "font-size": 14, fill: "var(--muted)" }); return; }
     const t0 = tms(S[0][0]) - 7 * 864e5, t1 = Math.max(tms(S[S.length - 1][0]), tms(ptDue())) + 7 * 864e5;
-    const ys = S.map(p => p[1]).concat([PT_STD.max - 30, PT_STD.min + 30, PT.goal]).concat(proj ? [proj.at] : []);
+    const ys = S.map(p => p[1]).concat([PT_STD.max - 30, PT_STD.min + 30, PT.goal]).concat(proj ? [proj.at] : []).concat(proj && proj.lo != null ? [proj.lo, proj.hi] : []);
     const slow = Math.ceil(Math.max(...ys) / 60) * 60, fast = Math.floor(Math.min(...ys) / 60) * 60;
     const x = t => L + (t - t0) / (t1 - t0) * (W - L - R), y = v => T + (v - fast) / (slow - fast) * (H - T - B);
     const ax = el("g", { class: "axis" }, svg);
@@ -2728,16 +2775,17 @@ function renderPT() {
     S.forEach(p => { const c = el("circle", { cx: x(tms(p[0])), cy: y(p[1]), r: 3.5, fill: "var(--ink)" }, svg); hoverable(c, `Week ending ${fmtDate(p[0])}<br>Estimated 2-mile ${mmss(p[1])} (${mmss(p[1] / 2)}/mi)`); });
     ptTrials().forEach(([d, v, src]) => { if (tms(d) < t0) return; const c = el("circle", { cx: x(tms(d)), cy: y(v), r: 6, fill: "var(--cat-run)", stroke: "var(--panel)", "stroke-width": 1.5 }, svg); hoverable(c, `Time trial ${fmtDate(d)}<br>${mmss(v)} (${src})`); });
     if (proj && days > 0) { const n = S[S.length - 1]; el("line", { x1: x(tms(n[0])), y1: y(n[1]), x2: x(tms(ptDue())), y2: y(proj.at), stroke: "var(--ink)", "stroke-width": 2, "stroke-dasharray": "6 4" }, svg);
+      if (proj.lo != null) el("line", { x1: x(tms(ptDue())), x2: x(tms(ptDue())), y1: y(proj.lo), y2: y(proj.hi), stroke: "var(--ink)", "stroke-width": 8, "stroke-linecap": "round", opacity: .28 }, svg);
       el("circle", { cx: x(tms(ptDue())), cy: y(proj.at), r: 6, fill: "var(--panel)", stroke: "var(--ink)", "stroke-width": 2 }, svg);
-      txt(svg, x(tms(ptDue())), y(proj.at) - 10, `≈ ${mmss(proj.at)}`, { "text-anchor": "middle", "font-size": 12, "font-weight": 700 }); }
-    document.getElementById("ptNote").textContent = `Each point estimates an all-out 2-mile from your best runs of 1.5+ miles in the 8 weeks before it (Riegel formula, exponent 1.06). Training runs aren't all-out, so this is likely a little conservative.${proj ? ` The projection extends the last 9 weeks' trend (${proj.slope <= 0 ? Math.abs(proj.slope).toFixed(1) + " s faster" : proj.slope.toFixed(1) + " s slower"} per week${proj.capped ? ", capped at 15 s a week" : ""}) to test day; treat it as a rough guide.` : ""}`; }
+      txt(svg, x(tms(ptDue())), y(proj.lo != null ? proj.lo : proj.at) - 12, proj.lo != null ? `${mmss(proj.lo)}–${mmss(proj.hi)}` : `≈ ${mmss(proj.at)}`, { "text-anchor": "middle", "font-size": 12, "font-weight": 700 }); }
+    document.getElementById("ptNote").textContent = `Each point estimates an all-out 2-mile from your best three runs of 1.5+ miles in the 8 weeks before it (Riegel formula, exponent 1.06). ${est && est.cal ? `Training runs read ${mmss(Math.abs(est.cal.off))} ${est.cal.off > 0 ? "faster" : "slower"} than your ${fmtDate(est.cal.date)} trial (${mmss(est.cal.trial)} vs ${mmss(est.cal.runs)}), so run-based points are adjusted by that much. ` : "A logged time trial within 8 weeks replaces the run estimate. "}${proj ? `Test day holds today's estimate. Tested on your history, holding it missed by ${proj.r ? mmss(proj.r.mae) : "–"} on average ${proj.r ? `${proj.r.h} weeks out` : ""}, extending the trend (${sgn(proj.slope, 1)} s a week) by ${proj.r && proj.r.maeTrend != null ? mmss(proj.r.maeTrend) : "–"}. ${proj.lo != null ? `The band is where 8 in 10 of ${proj.r.n} past forecasts at that distance landed. Treat it as a minimum: bands built only from earlier weeks held about half the time 8+ weeks out.` : "Not enough history yet for a range."}` : ""}`; }
   // time-trial list
   { const ul = document.getElementById("ttList"), T_ = ptTrials();
     ul.innerHTML = T_.length ? [...T_].reverse().map(([d, v, src]) => `<li><b>${mmss(v)}</b><span>${fmtDate(d)} · ${mmss(v / 2)}/mi · ${src === "manual" ? "added here" : "from Strava"}</span>${src === "manual" ? `<button data-d="${d}">Remove</button>` : ""}</li>`).join("") : '<li><span class="note" style="margin:0">No time trials yet.</span></li>';
     ul.querySelectorAll("button").forEach(b => b.onclick = () => { PT.tts = PT.tts.filter(x => x[0] !== b.dataset.d); ptSave(); renderPT(); renderStories(); renderGlance(); }); }
   // headline
   if (est) { const st = ptStatus(est.v), pj = proj && days > 0 ? proj.at : null;
-    setTake("tkPt", `${est.src === "trial" ? "Latest time trial" : "Estimated 2-mile"}: ${mmss(est.v)}, ${est.v <= PT.goal ? `${mmss(PT.goal - est.v)} inside your ${mmss(PT.goal)} goal` : `${mmss(est.v - PT.goal)} short of your ${mmss(PT.goal)} goal`} and ${est.v <= PT_STD.min ? `${mmss(PT_STD.min - est.v)} inside the 21:16 pass line` : `${mmss(est.v - PT_STD.min)} slower than the 21:16 pass line`}.${pj != null ? ` On the current trend you'd run about ${mmss(pj)} on ${fmtDate(ptDue())}.` : ""}`); }
+    setTake("tkPt", `${est.src === "trial" ? "Latest time trial" : "Estimated 2-mile"}: ${mmss(est.v)}, ${est.v <= PT.goal ? `${mmss(PT.goal - est.v)} inside your ${mmss(PT.goal)} goal` : `${mmss(est.v - PT.goal)} short of your ${mmss(PT.goal)} goal`} and ${est.v <= PT_STD.min ? `${mmss(PT_STD.min - est.v)} inside the 21:16 pass line` : `${mmss(est.v - PT_STD.min)} slower than the 21:16 pass line`}.${pj != null ? (proj.lo != null ? ` By ${fmtDate(ptDue())} expect ${mmss(proj.lo)}–${mmss(proj.hi)}: past forecasts this far out landed in that band 8 times in 10.` : ` If nothing changes, about ${mmss(pj)} on ${fmtDate(ptDue())}.`) : ""}`); }
 }
 
 /* ---------- tab stories ---------- */
@@ -4192,6 +4240,7 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 #cc .a-conf{font:500 .72rem var(--f-mono);letter-spacing:.04em;color:var(--muted)}
 #cc .a-conf b{color:var(--ink);font-weight:600}
 #cc .a-out .a-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+#cc .a-range{font:700 .78rem var(--f-body);color:var(--ink);background:var(--panel2);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
 #cc .a-out .a-big{text-shadow:var(--glow)}
 #cc .a-stack{display:flex;height:10px;border-radius:2px;overflow:hidden;background:var(--panel2);gap:2px}
 #cc .a-stack i{display:block;height:100%}
@@ -4827,8 +4876,9 @@ function run2Classic(proj) {
   const src = now.src === "trial" ? "time trial " + fD(now.date) : `best ${Math.min(3, now.n)} of ${now.n} runs, last 8 weeks`;
   if (!proj) return { v: now.v, src: "estimated from " + src };
   const S = []; for (let k = 9; k >= 0; k--) { const d = addD(S_.last, -7 * k), e = ptEstimate(d); if (e) S.push([d, e.v]); }
-  const pj = S.length ? ptProjection(S) : null;
-  return pj ? { v: pj.at, src: `on your current trend (${sgn(pj.slope, 0)} s a week${gap(S_.last, ptDue() || S_.last) / 7 > 9 ? " for 9 weeks, then held" : ""}) from today's ${mmss(now.v)}` } : { v: now.v, src: "estimated from " + src + "; not enough weeks for a trend" };
+  const pj = S.length ? ptProjection(S) : null, cal = now.cal ? `, adjusted ${now.cal.off > 0 ? "+" : "−"}${mmss(Math.abs(now.cal.off))} to match your ${fD(now.cal.date)} trial` : "";
+  if (!pj || pj.lo == null) return { v: now.v, src: `today's estimate (${src}${cal}), held to test day; not enough history for a range yet` };
+  return { v: pj.at, lo: pj.lo, hi: pj.hi, src: `today's ${mmss(now.v)} (${src}${cal}), held to test day. Likely ${mmss(pj.lo)}–${mmss(pj.hi)}: 8 in 10 of your ${pj.r.n} past forecasts ${pj.r.h} weeks out landed in that band` };
 }
 function run2Proj(to) {
   const S = []; for (let k = 9; k >= 0; k--) { const d = addD(TODAY, -7 * k), e = run2At(d); if (e) S.push([d, e.v]); }
@@ -4836,7 +4886,7 @@ function run2Proj(to) {
   const xs = S.map(p => gap(S[0][0], p[0]) / 7), ys = S.map(p => p[1]), mx = mean(xs), my = mean(ys);
   const den = xs.reduce((s, x) => s + (x - mx) ** 2, 0); if (!den) return null;
   const sl = clamp(xs.reduce((s, x, k) => s + (x - mx) * (ys[k] - my), 0) / den, -15, 15);
-  return { v: S[S.length - 1][1] + sl * Math.min(9, Math.max(0, gap(TODAY, to) / 7)), slope: sl, held: gap(TODAY, to) / 7 > 9 };
+  return { v: S[S.length - 1][1], slope: sl, held: true };  // hold today's estimate: it beat the trend in the backtest
 }
 const ptLog = kinds => ((D.pt && D.pt.base) || []).filter(r => kinds.includes(r[1])).sort((a, b) => a[0] < b[0] ? -1 : 1).pop();
 const ptWaist = () => [...tapeSeries("waist"), ...((D.pt && D.pt.base) || []).filter(r => r[1] === "waist").map(r => [r[0], parseFloat(r[2])])].filter(p => p[1] > 0).sort((a, b) => a[0] < b[0] ? -1 : 1);
@@ -4858,7 +4908,7 @@ function ptAuto(mode) {
   const to = ptDue() || TODAY, proj = mode === "test";
   const out = {}, rc = run2Classic(proj), run = rc === undefined ? run2At(TODAY) : null, rp = run && proj ? run2Proj(to) : null;
   if (rc) out.run = rc;
-  else if (run) out.run = { v: rp ? rp.v : run.v, src: rp ? `on your current trend (${sgn(rp.slope, 0)} s a week${rp.held ? " for 9 weeks, then held" : ""}) from today's ${mmss(run.v)}` : `estimated from ${run.src}` };
+  else if (run) out.run = { v: rp ? rp.v : run.v, src: rp ? `today's estimate (${run.src}) held to test day` : `estimated from ${run.src}` };
   const pu = ptLog(["push"]), hr = ptLog(["hrpu"]);
   if (pu) out.push = { v: +pu[2], src: `logged ${fD(pu[0])}` }; if (hr) out.hrpu = { v: +hr[2], src: `logged ${fD(hr[0])}` };
   const pl = ptLog(["plank"]), cr = ptLog(["crunch"]);
@@ -4872,21 +4922,24 @@ function ptCompute(mode) {
   const val = ev => P.vals[ev] != null && P.vals[ev] !== "" ? { v: pfParse(ev, P.vals[ev]), src: "entered" } : A[ev] || { v: null, src: "" };
   for (const c of ["cardio", "strength", "core"]) {
     const ev = P[c], x = val(ev), s = pfScore(ev, x.v, sex, age);
-    rows.push({ c, ev, v: x.v, src: x.src, ...s });
+    const rg = x.lo != null && x.hi != null ? { lo: x.lo, hi: x.hi, ptsHi: pfScore(ev, x.lo, sex, age).pts, ptsLo: pfScore(ev, x.hi, sex, age).pts } : {};
+    rows.push({ c, ev, v: x.v, src: x.src, ...s, ...rg });
   }
   const wv = P.vals.waist ? { v: +P.vals.waist, src: "entered" } : A.waist || { v: null, src: "" }, h = +P.height || null;
   const ws = pfWhtr(wv.v && h ? wv.v / h : null);
   rows.splice(1, 0, { c: "whtr", ev: "whtr", v: wv.v, src: wv.src, ratio: wv.v && h ? wv.v / h : null, ...ws });
   const have = rows.filter(r => r.pts != null), total = Math.round(have.reduce((t, r) => t + r.pts, 0) * 10) / 10;
   const complete = have.length === 4, fail = rows.some(r => r.fail);
-  return { rows, total, complete, fail, pass: complete && !fail && total >= 75, cat: !complete ? "Incomplete" : fail || total < 75 ? "Unsatisfactory" : total >= 90 ? "Excellent" : "Satisfactory" };
+  /* likely range of the total: only the run carries a tested range (Sprint 5); the other events count at their point value */
+  const rr = rows.find(r => r.ptsLo != null && r.pts != null), range = rr && complete ? [Math.round((total - rr.pts + rr.ptsLo) * 10) / 10, Math.round((total - rr.pts + rr.ptsHi) * 10) / 10] : null;
+  return { rows, total, range, complete, fail, pass: complete && !fail && total >= 75, cat: !complete ? "Incomplete" : fail || total < 75 ? "Unsatisfactory" : total >= 90 ? "Excellent" : "Satisfactory" };
 }
 function ptResult(mode) {
   const R_ = ptCompute(mode), to = ptDue();
   const pill = !R_.complete ? ["p-none", "Add the missing events"] : R_.pass ? [R_.cat === "Excellent" ? "p-good" : "p-good", R_.cat] : ["p-bad", R_.fail ? "Fails a minimum" : "Below 75"];
   const bar = r => { const [n, max] = PF_COMP[r.c]; const w = r.pts == null ? 0 : r.pts / max * 100;
     return `<div class="a-bar"><span>${n}</span><span class="t"><i style="width:${w.toFixed(0)}%;background:${r.fail ? "var(--bad)" : w >= 90 ? "var(--good)" : "var(--warn)"}"></i></span><span class="v">${r.pts == null ? "–" : r.pts}<span class="a-u">/${max}</span></span></div>`; };
-  return `<div class="a-card"><div class="a-h"><div><span class="a-big">${R_.complete ? R_.total : "–"}</span><span class="a-u">/ 100</span></div><span class="a-pill ${pill[0]}">${pill[1]}</span></div>
+  return `<div class="a-card"><div class="a-h"><div><span class="a-big">${R_.complete ? R_.total : "–"}</span><span class="a-u">/ 100</span>${mode === "test" && R_.range && R_.range[0] !== R_.range[1] ? ` <span class="a-range">likely ${R_.range[0]}–${R_.range[1]}</span>` : ""}</div><span class="a-pill ${pill[0]}">${pill[1]}</span></div>
     <div class="a-bars">${R_.rows.map(bar).join("")}</div>
     <div class="a-note">${mode === "test" && to ? `Projected for test day, ${fD(to)}: a forecast from your trends, not an official score. ` : "If you tested today, from your latest results. "}75 passes, 90 is Excellent. Miss any minimum and the test fails.${R_.complete ? "" : ` ${R_.rows.filter(r => r.pts == null).map(r => PF_COMP[r.c][0]).join(" and ")} still need${R_.rows.filter(r => r.pts == null).length === 1 ? "s" : ""} a result.`}</div></div>`;
 }
@@ -5006,12 +5059,12 @@ function ptOutlook() {
   const gapRow = C.rows.filter(r => r.pts != null).map(r => [r, PF_COMP[r.c][1] - r.pts]).sort((a, b) => b[1] - a[1])[0];
   const next = C.total < 75 ? 75 : C.total < 90 ? 90 : null;
   const COL = { cardio: "var(--run)", whtr: "var(--diet)", strength: "var(--lift)", core: "var(--prime)" };
-  return `<button type="button" class="a-card a-out" data-sheet="ptcalc" aria-label="PT test outlook. ${due ? `Projected ${C.total} for ${fD(due)}` : `${C.total} if you tested today`}, ${pill[1]}. Open the calculator.">
+  return `<button type="button" class="a-card a-out" data-sheet="ptcalc" aria-label="PT test outlook. ${due ? `Projected ${C.total}${C.range ? `, likely ${C.range[0]} to ${C.range[1]},` : ""} for ${fD(due)}` : `${C.total} if you tested today`}, ${pill[1]}. Open the calculator.">
     <div class="a-h"><span class="a-lbl">PT test${due ? ` · ${fD(due)} · ${days} day${days === 1 ? "" : "s"}` : ""}</span><span class="a-pill ${pill[0]}">${pill[1]}</span></div>
-    <div class="a-row"><span class="a-big">${C.total}</span><span class="a-u">/ 100 ${due ? "projected" : "today"}</span></div>
+    <div class="a-row"><span class="a-big">${C.total}</span><span class="a-u">/ 100 ${due ? "projected" : "today"}</span>${due && C.range && C.range[0] !== C.range[1] ? `<span class="a-range">likely ${C.range[0]}–${C.range[1]}</span>` : ""}</div>
     <div class="a-stack" aria-hidden="true">${C.rows.map(r => `<i style="width:${PF_COMP[r.c][1]}%;background:${r.pts == null ? "transparent" : `color-mix(in srgb,${COL[r.c]} ${Math.round(35 + 65 * r.pts / PF_COMP[r.c][1])}%,var(--panel2))`}"></i>`).join("")}</div>
     <div class="a-legend">${C.rows.map(r => `<span><b>${r.pts ?? "–"}</b>${PF_COMP[r.c][0].replace("Waist-to-height", "Waist")} /${PF_COMP[r.c][1]}</span>`).join("")}</div>
-    <span class="a-sub">${next ? `${r1(next - C.total)} pts to ${next === 90 ? "Excellent" : "pass"}. ` : ""}${gapRow && gapRow[1] > 0 ? `Most room: ${PF_COMP[gapRow[0].c][0].toLowerCase()} (${r1(gapRow[1])} pts). ` : ""}${due ? "A forecast from your trends, not an official score." : ""}</span>
+    <span class="a-sub">${next ? `${r1(next - C.total)} pts to ${next === 90 ? "Excellent" : "pass"}. ` : ""}${gapRow && gapRow[1] > 0 ? `Most room: ${PF_COMP[gapRow[0].c][0].toLowerCase()} (${r1(gapRow[1])} pts). ` : ""}${due ? (C.range ? "The range is how far past run forecasts this far out have missed; not an official score." : "A forecast from your data, not an official score.") : ""}</span>
   </button>`;
 }
 function todayView() {
