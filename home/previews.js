@@ -98,7 +98,10 @@
         h("span", { class: "num" }, String(hi)), h("span", { class: "num" }, String(lo))),
       days.map((d) => h("div", { class: "days__col" + (d.status !== "good" ? " days__col--flag" : ""), "aria-hidden": "true" },
         h("span", { class: "days__plot" },
-          h("span", { class: "days__bar", style: { bottom: y(d.available_p10), height: `calc(${y(d.available_p90)} - ${y(d.available_p10)})` } }),
+          // a day with no spread (every week starts with the same aircraft, as on Monday) draws as a dot, not an invisible bar
+          h("span", { class: "days__bar", style: d.available_p90 > d.available_p10
+            ? { bottom: y(d.available_p10), height: `calc(${y(d.available_p90)} - ${y(d.available_p10)})` }
+            : { bottom: `calc(${y(d.available_p10)} - 6px)`, height: "12px" } }),
           h("span", { class: "days__mid", style: { bottom: y(d.available_p50) } }),
           h("span", { class: "days__need", style: { bottom: y(d.needed) } })),
         h("span", { class: "days__day" }, d.day),
