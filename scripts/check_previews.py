@@ -2,7 +2,7 @@
 
 The hub (home/previews.js) reads, in the browser, from the same origin:
   TPS-Monte-Carlo-Simulation/data/presets.json -> preset_<default>.json   (aircraft ready vs needed, Mon-Fri)
-  valuation/demo/data/index.json -> DEMO's comparison.json                (football field of the weighted methods)
+  valuation/data/index.json -> AAPL's latest comparison.json            (football field of the weighted methods)
 and shows a few numbers from each without recalculating anything. This script checks the same contract in
 Python, so a renamed field or a changed file fails CI instead of quietly showing the fallback line.
 
@@ -22,7 +22,8 @@ import urllib.request
 
 SITE = "https://courtizy.github.io/"
 TPS = "TPS-Monte-Carlo-Simulation/data/"
-VAL = "valuation/demo/data/"
+VAL = "valuation/data/"
+VAL_TICKER = "AAPL"   # the company the Valuation app opens on
 DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri")
 
 
@@ -70,8 +71,8 @@ def check_tps(preset: dict) -> tuple[list[str], dict]:
 def check_valuation(index: dict, comparison: dict) -> tuple[list[str], dict]:
     problems: list[str] = []
     companies = index.get("companies") or []
-    if not any(c.get("ticker") == "DEMO" for c in companies):
-        problems.append("demo index has no DEMO company (the preview would fall back to the first one)")
+    if not any(c.get("ticker") == VAL_TICKER for c in companies):
+        problems.append(f"index has no {VAL_TICKER} (the preview would fall back to the first company)")
     methods = [m for m in comparison.get("plan", {}).get("methods", []) if m.get("ran") and _num(m.get("weight")) and m["weight"] > 0]
     if not methods:
         problems.append("plan.methods has no method that ran with weight > 0")
@@ -91,7 +92,7 @@ def check_valuation(index: dict, comparison: dict) -> tuple[list[str], dict]:
     elif not blend["p10"] <= blend["p50"] <= blend["p90"]:
         problems.append("blend percentiles out of order")
     shown = {} if problems else {
-        "headline": f"${js_round(blend['p10'])}–${js_round(blend['p90'])} a share",
+        "headline": f"${blend['p10']:.2f}–${blend['p90']:.2f} a share",   # toFixed(2), as the app's headline
         "rows": [m for m, _ in rows],
         "price": comparison.get("price"),
     }
@@ -107,11 +108,11 @@ def _get(url: str):
 def load(fixtures: pathlib.Path | None):
     if fixtures:
         read = lambda name: json.loads((fixtures / name).read_text(encoding="utf-8"))  # noqa: E731
-        return (read("tps_preset_default.json"), read("valuation_demo_index.json"), read("valuation_demo_comparison.json"))
+        return (read("tps_preset_default.json"), read("valuation_aapl_index.json"), read("valuation_aapl_comparison.json"))
     presets = _get(SITE + TPS + "presets.json")
     preset = _get(SITE + TPS + f"preset_{presets['default']}.json")
     index = _get(SITE + VAL + "index.json")
-    company = next((c for c in index["companies"] if c.get("ticker") == "DEMO"), index["companies"][0])
+    company = next((c for c in index["companies"] if c.get("ticker") == VAL_TICKER), index["companies"][0])
     return preset, index, _get(SITE + VAL + company["runs"][0]["comparison"])
 
 

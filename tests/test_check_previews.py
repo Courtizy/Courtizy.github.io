@@ -1,4 +1,5 @@
-"""The homepage preview contract, on trimmed copies of what the models published (TPS v0.13.0, Valuation demo as of 2026-09-30)."""
+"""The homepage preview contract, on trimmed copies of what the models published (TPS v0.13.0; Valuation AAPL as of 2026-11-18,
+and the synthetic demo as of 2026-09-30 for the several-methods case)."""
 import copy
 import json
 import pathlib
@@ -9,6 +10,8 @@ import check_previews as cp  # noqa: E402
 
 FIX = pathlib.Path(__file__).parent / "fixtures" / "previews"
 PRESET, INDEX, COMPARISON = cp.load(FIX)
+DEMO_INDEX = json.loads((FIX / "valuation_demo_index.json").read_text())
+DEMO_COMPARISON = json.loads((FIX / "valuation_demo_comparison.json").read_text())
 
 
 def test_published_files_pass_and_show_the_engine_numbers():
@@ -17,8 +20,20 @@ def test_published_files_pass_and_show_the_engine_numbers():
     assert tp == [] and vp == []
     # Independent of the script: 0.935 of 2,000 weeks rounds to 94%; Wednesday is the one day TPS marks "At risk".
     assert ts["headline"] == "94% of weeks meet the plan" and ts["flagged"] == ["Wed"] and ts["runs"] == 2000
-    # Blend p10 34.36 and p90 53.88 round to $34 and $54; DCF (60%) and sector comps (40%) carry the weight.
-    assert vs["headline"] == "$34–$54 a share" and vs["rows"] == ["dcf", "comps"] and vs["price"] == 45.0
+    # Apple: the DCF carries all the weight, no market price is published, and the range matches the app's
+    # headline to the cent ($83.19–$175.28, from blend p10 83.186 and p90 175.283).
+    assert vs["headline"] == "$83.19–$175.28 a share" and vs["rows"] == ["dcf"] and vs["price"] is None
+
+
+def test_several_weighted_methods_still_pass():
+    # The synthetic demo: DCF (60%) and sector comps (40%), with a share price.
+    problems, shown = cp.check_valuation({"companies": [{"ticker": "AAPL"}]}, DEMO_COMPARISON)
+    assert problems == [] and shown["rows"] == ["dcf", "comps"] and shown["price"] == 45.0
+    assert shown["headline"] == "$34.36–$53.88 a share"
+
+
+def test_index_without_apple_is_flagged():
+    assert any("no AAPL" in x for x in cp.check_valuation(DEMO_INDEX, COMPARISON)[0])
 
 
 def test_js_round_matches_math_round_on_halves():
@@ -50,8 +65,8 @@ def test_valuation_without_weighted_methods_or_blend_fails():
 
 def test_weighted_method_missing_from_football_field_fails():
     c = copy.deepcopy(COMPARISON)
-    c["football_field"] = [f for f in c["football_field"] if f["model"] != "comps"]
-    assert any("'comps'" in x for x in cp.check_valuation(INDEX, c)[0])
+    c["football_field"] = [f for f in c["football_field"] if f["model"] != "dcf"]
+    assert any("'dcf'" in x for x in cp.check_valuation(INDEX, c)[0])
 
 
 def test_fixture_files_are_small():

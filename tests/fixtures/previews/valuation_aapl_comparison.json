@@ -1,0 +1,56 @@
+{
+ "ticker": "AAPL",
+ "as_of": "2026-11-18",
+ "price": null,
+ "blend": {
+  "p10": 83.18642611507282,
+  "p50": 116.26014444164085,
+  "p90": 175.28334307058026
+ },
+ "plan": {
+  "methods": [
+   {
+    "model": "dcf",
+    "ran": true,
+    "weight": 1.0
+   },
+   {
+    "model": "comps",
+    "ran": false,
+    "weight": 0.0
+   },
+   {
+    "model": "dcf_synergy",
+    "ran": false,
+    "weight": 0.0
+   },
+   {
+    "model": "just_synergy",
+    "ran": false,
+    "weight": 0.0
+   },
+   {
+    "model": "lbo",
+    "ran": false,
+    "weight": 0.0
+   },
+   {
+    "model": "precedents",
+    "ran": false,
+    "weight": 0.0
+   }
+  ]
+ },
+ "football_field": [
+  {
+   "model": "dcf",
+   "p10": 83.18642611507282,
+   "p50": 116.26014444164085,
+   "p90": 175.28334307058026
+  }
+ ],
+ "headlines": {
+  "field": "One weighted method so far: $83.19\u2013$175.28 a share.",
+  "dcf": "The DCF's $116.26 a share rests 40% on the terminal value."
+ }
+}

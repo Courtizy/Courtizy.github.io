@@ -4,7 +4,8 @@
 // row still works as a plain link. scripts/check_previews.py checks the same contract in CI.
 (() => {
   const TPS = "TPS-Monte-Carlo-Simulation/data/";
-  const VAL = "valuation/demo/data/";
+  const VAL = "valuation/data/";      // the live data the app opens on (Apple), not the demo
+  const VAL_TICKER = "AAPL";
   const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
   const LABELS = { dcf: "DCF", comps: "Sector comps", comps_closest: "Closest comps", precedents: "Precedents", lbo: "LBO" };
 
@@ -22,6 +23,7 @@
     return el;
   };
   const dollars = (x) => "$" + Math.round(x);
+  const cents = (x) => "$" + x.toFixed(2);   // the app headline shows cents; the card matches it
   const pct = (x) => Math.round(x * 100) + "%";
   const isNum = (x) => typeof x === "number" && Number.isFinite(x);
 
@@ -31,10 +33,24 @@
     if (err) console.warn("[home previews]", err.message || err);
   }
 
-  /* ---- Valuation: a compact football field for the synthetic demo company ---- */
+  /* Phone cards lead with the answer: the same numeral and one short line, placed above the question.
+     Only one of the two copies is ever displayed (CSS), so a screen reader hears it once. */
+  function answerFirst(id, numeral, line) {
+    const el = document.querySelector(`[data-answer="${id}"]`);
+    if (!el) return;
+    el.replaceChildren(h("span", { class: "num" }, numeral), line);
+    el.hidden = false;
+  }
+  function proof(key, text) {
+    const el = document.querySelector(`[data-proof="${key}"]`);
+    if (el) el.textContent = text;
+  }
+  const day = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+  /* ---- Valuation: a compact football field for Apple, the company the app opens on ---- */
   async function valuation(slot) {
     const index = await getJSON(VAL + "index.json");
-    const company = index.companies.find((c) => c.ticker === "DEMO") || index.companies[0];
+    const company = index.companies.find((c) => c.ticker === VAL_TICKER) || index.companies[0];
     const run = company.runs[0];
     const cmp = await getJSON(VAL + run.comparison);
     const weighted = cmp.plan.methods.filter((m) => m.ran && m.weight > 0);
@@ -43,13 +59,15 @@
       .filter((r) => isNum(r.p10) && isNum(r.p50) && isNum(r.p90));
     const blend = cmp.blend;
     if (!rows.length || !blend || ![blend.p10, blend.p50, blend.p90].every(isNum)) throw new Error("valuation: unexpected comparison.json shape");
-    rows.push({ label: "Weighted", ...blend, total: true });
+    if (rows.length > 1) rows.push({ label: "Weighted", ...blend, total: true });   // one method: its row is the blend
 
     const price = isNum(cmp.price) ? cmp.price : null;
     const lo = Math.floor(Math.min(...rows.map((r) => r.p10), price ?? Infinity) / 5) * 5;
     const hi = Math.ceil(Math.max(...rows.map((r) => r.p90), price ?? -Infinity) / 5) * 5;
     const x = (v) => ((v - lo) / (hi - lo)) * 100 + "%";
+    const synthetic = company.demo || /\(synthetic\)/i.test(company.name);
     const name = company.name.replace(/\s*\(synthetic\)\s*$/i, "");
+    const range = `${cents(blend.p10)}–${cents(blend.p90)}`;
 
     const said = rows.map((r) => `${r.label}: ${dollars(r.p10)} to ${dollars(r.p90)}, median ${dollars(r.p50)}`).join("; ");
     const chart = h("div", { class: "ff", role: "img",
@@ -70,10 +88,15 @@
         h("span", { class: "ff__range" })));
 
     slot.replaceChildren(
-      h("p", { class: "pv__answer" }, h("span", { class: "num" }, `${dollars(blend.p10)}–${dollars(blend.p90)}`), " a share"),
-      h("p", { class: "pv__caption" }, `Example: ${name}, a synthetic company. Value per share, middle 80% of simulated runs.`),
+      h("p", { class: "pv__answer" }, h("span", { class: "num" }, range), " a share"),
+      h("p", { class: "pv__caption" }, synthetic
+        ? `Example: ${name}, a synthetic company. Value per share, middle 80% of simulated runs.`
+        : `${name} from its SEC filings, as of ${day(run.as_of)}. Value per share, middle 80% of simulated runs.`),
       chart,
-      cmp.headlines?.field ? h("p", { class: "pv__note" }, cmp.headlines.field) : null);
+      (rows.length > 1 ? cmp.headlines?.field : cmp.headlines?.dcf || cmp.headlines?.field)
+        ? h("p", { class: "pv__note" }, rows.length > 1 ? cmp.headlines.field : cmp.headlines.dcf || cmp.headlines.field) : null);
+    answerFirst("valuation", range, `a share for ${synthetic ? `${name} (synthetic)` : name}`);
+    if (!synthetic) proof("data", `Public SEC filings (as of ${day(run.as_of)}) and synthetic inputs only`);
     slot.removeAttribute("aria-busy");
   }
 
@@ -118,6 +141,8 @@
       p.binding && isNum(p.binding.p_day_met)
         ? h("p", { class: "pv__note" }, `Binding constraint: ${p.binding.requirement} holds in ${pct(p.binding.p_day_met)} of weeks.`) : null);
     slot.removeAttribute("aria-busy");
+    answerFirst("tps", pct(share), "of simulated weeks meet the plan");
+    proof("runs", `${p.simulation.runs.toLocaleString("en-US")} seeded runs per result`);
   }
 
   for (const [id, fn] of [["valuation", valuation], ["tps", tps]]) {

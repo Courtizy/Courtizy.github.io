@@ -1,0 +1,16 @@
+{
+ "market_data": "showcase",
+ "companies": [
+  {
+   "ticker": "AAPL",
+   "name": "Apple Inc.",
+   "demo": false,
+   "runs": [
+    {
+     "as_of": "2026-11-18",
+     "comparison": "AAPL/2026-11-18/comparison.json"
+    }
+   ]
+  }
+ ]
+}
