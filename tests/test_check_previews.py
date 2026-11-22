@@ -16,7 +16,7 @@ def test_published_files_pass_and_show_the_engine_numbers():
     vp, vs = cp.check_valuation(INDEX, COMPARISON)
     assert tp == [] and vp == []
     # Independent of the script: 0.935 of 2,000 weeks rounds to 94%; Wednesday is the one day TPS marks "At risk".
-    assert ts["headline"] == "94% of simulated weeks" and ts["flagged"] == ["Wed"] and ts["runs"] == 2000
+    assert ts["headline"] == "94% of weeks meet the plan" and ts["flagged"] == ["Wed"] and ts["runs"] == 2000
     # Blend p10 34.36 and p90 53.88 round to $34 and $54; DCF (60%) and sector comps (40%) carry the weight.
     assert vs["headline"] == "$34–$54 a share" and vs["rows"] == ["dcf", "comps"] and vs["price"] == 45.0
 

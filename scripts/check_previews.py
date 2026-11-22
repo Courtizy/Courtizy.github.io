@@ -60,7 +60,7 @@ def check_tps(preset: dict) -> tuple[list[str], dict]:
     if not _num(preset.get("simulation", {}).get("runs")):
         problems.append("simulation.runs missing")
     shown = {} if problems else {
-        "headline": f"{js_round(share * 100)}% of simulated weeks",
+        "headline": f"{js_round(share * 100)}% of weeks meet the plan",
         "flagged": [d for d in DAYS if days[d]["status"] != "good"],
         "runs": preset["simulation"]["runs"],
     }
