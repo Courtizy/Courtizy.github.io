@@ -105,8 +105,8 @@
         h("span", { class: "days__flag" }, d.status !== "good" ? d.status_label : ""))));
 
     slot.replaceChildren(
-      h("p", { class: "pv__answer" }, h("span", { class: "num" }, pct(share)), " of simulated weeks"),
-      h("p", { class: "pv__caption" }, `meet every requirement. Example: ${p.unit_name.toLowerCase().replace(/^synthetic/, "a synthetic")}, ${p.scenario_label.toLowerCase()}, ${p.simulation.runs.toLocaleString("en-US")} runs.`),
+      h("p", { class: "pv__answer" }, h("span", { class: "num" }, pct(share)), " of weeks meet the plan"),
+      h("p", { class: "pv__caption" }, `Share of simulated weeks that meet every requirement. Example: ${p.unit_name.toLowerCase().replace(/^synthetic/, "a synthetic")}, ${p.scenario_label.toLowerCase()}, ${p.simulation.runs.toLocaleString("en-US")} runs.`),
       chart,
       h("p", { class: "pv__legend", "aria-hidden": "true" },
         h("span", {}, h("span", { class: "key key--bar" }), " aircraft ready, middle 80% of weeks"),
