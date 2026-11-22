@@ -46,6 +46,13 @@
     .hero { display: grid; gap: 10px; }
     .hero h1 { margin: 0; font-size: clamp(2.125rem, 1.2rem + 3.3vw, 3.5rem); line-height: 1.04; letter-spacing: -0.025em; text-wrap: balance; }
     .hero p { margin: 0; max-width: 60ch; font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem); color: var(--ink-secondary); }
+    /* Proof strip: checkable facts instead of logos or ratings. Numbers in it come from the models' JSON (previews.js). */
+    .proof { display: flex; flex-wrap: wrap; gap: 4px 0; margin: -10px 0 0; padding: 0; list-style: none; font-size: 0.8125rem; color: var(--ink-secondary); }
+    .proof li:not(:last-child)::after { content: "·"; margin: 0 10px; }
+    .proof a { color: var(--ink-secondary); text-underline-offset: 3px; }
+    .proof a:hover { color: var(--ink); }
+    .row__answer { display: none; margin: 0 0 10px; color: var(--ink-secondary); font-size: 0.875rem; line-height: 1.3; }
+    .row__answer .num { display: block; font-size: 2.25rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
 
     /* ---- Live models: question-led rows ---- */
     .live { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 48px; }
@@ -62,7 +69,6 @@
     .row__link { display: block; color: var(--ink); text-decoration: none; }
     .row__link::after { content: ""; position: absolute; inset: 0; }   /* the whole row is the link */
     .row__q { margin: 0; font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem); line-height: 1.18; letter-spacing: -0.01em; font-weight: 700; text-wrap: balance; }
-    .row__what { margin: 10px 0 0; color: var(--ink-secondary); max-width: 44ch; }
     .row__go { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; min-height: 24px; font-weight: 500; color: var(--accent); }
     .row__go span { transition: transform 0.15s ease; }
     .row:hover .row__q { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--brand-fill); }
@@ -174,7 +180,14 @@
       .hero h1 { font-size: 2.125rem; }
       .row { padding: 18px 16px 14px; border-radius: 16px; }
       .side { border-radius: 16px; }
-      .row__what { font-size: 0.9375rem; }
+      /* Answer first on phones: the numeral and one line lead the card, so the first screen holds a real result */
+      .row__answer:not([hidden]) { display: block; }
+      .row__answer:not([hidden]) ~ .row__link .row__q { font-size: 1.25rem; }
+      .row:has(.row__answer:not([hidden])) .pv__answer { display: none; }
+      .hero p { font-size: 0.9375rem; }
+      /* the proof strip moves below the two cards, so the first phone screen reaches an answer */
+      .proof { order: 1; margin: 0; font-size: 0.75rem; }
+      .next, .side { order: 2; }
       .ff__row, .ff__axis { grid-template-columns: 7.6em minmax(0, 1fr) 5em; gap: 8px; }
     }
     @media (prefers-reduced-motion: reduce) { .row__go span { transition: none; } .row:hover .row__go span { transform: none; } }
@@ -203,18 +216,25 @@
       <p>I build open decision models for operations, capital allocation and deals.</p>
     </section>
 
+    <ul class="proof" aria-label="How the models are checked">
+      <li>Tested on every push: <a href="https://github.com/Courtizy/valuation/actions/workflows/tests.yml">Valuation</a>, <a href="https://github.com/Courtizy/TPS-Monte-Carlo-Simulation/actions/workflows/pages.yml">TPS</a></li>
+      <li data-proof="runs">Seeded, reproducible runs</li>
+      <li data-proof="data">Public SEC filings and synthetic inputs only</li>
+      <li><a href="https://github.com/Courtizy">Open code on GitHub</a></li>
+    </ul>
+
     <section class="live" aria-labelledby="live-h">
       <h2 class="label" id="live-h">Two models you can use today</h2>
 
       <article class="row" data-app="valuation">
         <div>
+          <p class="row__answer" data-answer="valuation" hidden></p>
           <p class="row__id">
             <span class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M14 16h26"/><path d="M22 28h30"/><path d="M10 40h28"/><path d="M24 52h22"/></svg></span>
             Valuation Model <small>Deals</small>
           </p>
           <a class="row__link" href="https://courtizy.github.io/valuation/" aria-labelledby="val-q val-go">
             <h3 class="row__q" id="val-q">What is a public company worth across plausible assumptions?</h3>
-            <p class="row__what">Builds the financials from SEC filings, values the company three ways, and simulates the range.</p>
             <span class="row__go" id="val-go">Explore the Valuation Model <span aria-hidden="true">→</span></span>
           </a>
         </div>
@@ -223,13 +243,13 @@
 
       <article class="row" data-app="tps">
         <div>
+          <p class="row__answer" data-answer="tps" hidden></p>
           <p class="row__id">
             <span class="brand-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M52 32a20 20 0 1 1-6-14.3"/><path d="M48 8v10H38"/><circle cx="32" cy="32" r="4" fill="currentColor"/></svg></span>
             Turn Pattern Sustainability <small>Operations</small>
           </p>
           <a class="row__link" href="https://courtizy.github.io/TPS-Monte-Carlo-Simulation/" aria-labelledby="tps-q tps-go">
             <h3 class="row__q" id="tps-q">How often can the fleet fly the weekly schedule?</h3>
-            <p class="row__what">Runs the same flying week thousands of times with random breaks and repairs, and shows where it runs tight.</p>
             <span class="row__go" id="tps-go">Explore the fleet simulation <span aria-hidden="true">→</span></span>
           </a>
         </div>
