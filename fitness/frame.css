@@ -87,3 +87,22 @@ html.dz-app body{background-color:var(--dz-bg)}
   .dz-tag{flex:none;font-size:.68rem;padding:2px 8px}
   .dz-tabs a{padding:0 14px;font-size:.84rem}
 }
+
+/* signed-in app menu: only on phones, where it replaces the hub bar and page tabs */
+.dz-menu{position:relative;display:none}
+.dz-menu summary{list-style:none}
+.dz-menu summary::-webkit-details-marker{display:none}
+.dz-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:1100;min-width:220px;display:grid;padding:6px;border-radius:16px;background:var(--dz-panel);border:1px solid var(--dz-rule);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.dz-pop a,.dz-pop button{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--dz-ink);font:600 .92rem var(--dz-body);text-decoration:none;text-align:left;cursor:pointer}
+.dz-pop a:hover,.dz-pop button:hover{background:var(--dz-panel2)}
+.dz-pop a:focus-visible,.dz-pop button:focus-visible,.dz-menu summary:focus-visible{outline:2px solid var(--dz-accent);outline-offset:2px}
+.dz-pop span{padding:8px 12px 4px;font-size:.78rem;color:var(--dz-muted);border-top:1px solid var(--dz-rule);margin-top:4px}
+@media (max-width:520px){
+  html.dz-app .dz-hub,html.dz-app .dz-tabbar,html.dz-app .dz-name p,html.dz-app #dzOut{display:none}
+  html.dz-app .dz-menu{display:block}
+  html.dz-app .dz-head{border-top-width:3px}
+  html.dz-app .dz-head .dz-in{padding-block:6px}
+  html.dz-app .dz-tile{width:30px;height:30px;border-radius:8px}
+  html.dz-app .dz-tile svg{width:17px;height:17px}
+  html.dz-app .dz-name .dz-h{font-size:1rem}
+}
