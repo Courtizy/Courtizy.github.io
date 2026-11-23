@@ -11,8 +11,11 @@
   if (mode !== "public") R.classList.add("dz-app");
   const results = signedIn ? base : base + "demo.html";
   const tab = (k, href, label) => `<a href="${href}"${k === page ? ' aria-current="page"' : ""}>${label}</a>`;
+  /* signed-in app on a phone: the hub bar and page tabs fold into this menu, so the header is one row (decided 2026-11-23) */
+  const menu = mode === "app" ? `<details class="dz-menu"><summary class="dz-btn dz-icon" aria-label="Menu: Decision Models, Overview, Method, sign out"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+  <nav class="dz-pop" aria-label="Pages"><a href="https://courtizy.github.io/">&larr; Decision Models</a><a href="${base}overview.html">Overview</a><a href="${base}overview.html#method">Method</a><button type="button" id="dzOut2">Sign out</button><span>Jason C. Courtoy</span></nav></details>` : "";
   const act = mode === "app"
-    ? `<button type="button" class="dz-btn" id="dzOut">Sign out</button>`
+    ? `<button type="button" class="dz-btn" id="dzOut">Sign out</button>${menu}`
     : signedIn ? `<a class="dz-btn dz-primary" href="${base}">Open dashboard</a>`
     : page === "signin" ? "" : `<a class="dz-btn dz-primary" href="${base}?signin">Sign in</a>`;
   const theme = mode === "public" ? `<button type="button" class="dz-btn dz-icon" id="dzTheme" aria-label="Switch light or dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>` : "";
@@ -31,7 +34,10 @@ ${mode === "demo" ? `<div class="dz-strip"><div class="dz-in"><span class="dz-ta
     document.body.insertAdjacentHTML("afterbegin", top);
     document.body.insertAdjacentHTML("beforeend", foot);
     const out = document.getElementById("dzOut");
-    if (out) out.onclick = () => { try { localStorage.removeItem("fitness-session"); localStorage.removeItem("fitness-gh-token"); } catch (e) {} location.href = base + "overview.html"; };
+    const signOut = () => { try { localStorage.removeItem("fitness-session"); localStorage.removeItem("fitness-gh-token"); } catch (e) {} location.href = base + "overview.html"; };
+    if (out) out.onclick = signOut;
+    const out2 = document.getElementById("dzOut2"); if (out2) out2.onclick = signOut;
+    document.addEventListener("click", e => { const m = document.querySelector(".dz-menu[open]"); if (m && !m.contains(e.target)) m.open = false; });
     const th = document.getElementById("dzTheme");
     if (th) th.onclick = () => { const n = R.getAttribute("data-theme") === "light" ? "dark" : "light"; R.setAttribute("data-theme", n); try { localStorage.setItem("a-theme", n); } catch (e) {} };
   };
