@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Delta Readiness · Jason C. Courtoy</title>
-<meta name="description" content="Am I ready for the PT test? Daily readiness from your own watch data, and a USAF PT score projected to test day.">
+<meta name="description" content="How is training tracking toward test day? A daily training call from your own watch data, and a USAF PT test outlook that shows how far its forecasts have missed.">
 <meta name="apple-mobile-web-app-title" content="Delta">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -59,6 +59,22 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 .pill{flex:none;font:700 .72rem var(--dz-body);border-radius:999px;padding:2px 10px}
 .pill.done{color:var(--dz-accent);background:color-mix(in srgb,var(--dz-accent) 14%,transparent)}
 .pill.plan{color:var(--dz-muted);background:var(--dz-panel2)}
+.small{font-size:.88rem}
+.kind{font-style:normal;font:700 .72rem var(--dz-body);color:var(--dz-muted);background:var(--dz-panel2);border-radius:999px;padding:1px 8px;white-space:nowrap}
+/* forecast case */
+.case{--run:#0A6E92}
+:root[data-theme="dark"] .case{--run:#5CC8EE}
+.case .qa{display:grid;gap:14px;margin-top:6px}
+.case .qa>div{display:grid;gap:4px;border-top:1px solid var(--dz-rule);padding-top:12px}
+.case .qa>div:first-child{border-top:0;padding-top:0}
+.case .q{font:800 1rem/1.3 var(--dz-display)}
+.case figure{margin:6px 0 0;display:grid;gap:8px}
+.case figure>svg{width:100%;height:auto;max-width:560px;display:block}
+.case .key svg{flex:none}
+.case figcaption{font-size:.86rem;color:var(--dz-muted);max-width:66ch}
+.case .key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.86rem;color:var(--dz-ink)}
+.case .key span{display:inline-flex;align-items:center;gap:6px}
+.case .tag{display:inline-block;font:700 .72rem var(--dz-body);color:var(--dz-ink);background:var(--dz-panel2);border-radius:999px;padding:2px 10px}
 </style>
 </head>
 <body>
@@ -68,15 +84,16 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   <div class="hero">
     <div class="lead">
       <span class="lbl">Side project · Readiness</span>
-      <h2>Know your PT score before test day.</h2>
-      <p>Your watch already tracks how you slept and recovered. Delta Readiness turns it into a daily call (push or back off) and a running projection of your PT score.</p>
-      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See results</a><a class="dz-btn" href="#method">How it works</a></div>
+      <h2>How is training tracking toward test day?</h2>
+      <p>Delta Readiness pulls watch, run, lifting and food data into one daily call (push or back off) and a test-day outlook that says how far it has missed before.</p>
+      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">Explore the sample dashboard</a><a class="dz-btn" href="#m-case">Read the forecast study</a></div>
+      <p class="muted small">The sample dashboard uses made-up data. The study shows why the run forecast stopped extending recent trends.</p>
     </div>
     <div class="card answer" aria-label="What it tells you">
       <span class="lbl">Every morning</span>
-      <div class="row"><b>0–100</b><span>Readiness against your own baseline.</span></div>
-      <div class="row"><b>100 pts</b><span>PT score today, and projected for your next test.</span></div>
-      <div class="row"><b>2-mile</b><span>Run time from your recent runs, with a range tested on your own history.</span></div>
+      <div class="row"><b>0–100</b><span>Readiness against your own baseline. <i class="kind">Rule of thumb</i></span></div>
+      <div class="row"><b>100 pts</b><span>PT score from your latest results. <i class="kind">Official table</i></span></div>
+      <div class="row"><b>2-mile</b><span>Test-day run time, with the range of past misses. <i class="kind">Forecast</i></span></div>
     </div>
   </div>
 
@@ -85,7 +102,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
     <div class="steps">
       <div class="step"><span class="n">01</span><b>Sync</b><span>Apple Health, Strava, Liftosaur and MacroFactor in one place.</span></div>
       <div class="step"><span class="n">02</span><b>Score</b><span>Each signal measured against your last 21 days, not a population average.</span></div>
-      <div class="step"><span class="n">03</span><b>Project</b><span>Your trends run through the official PFRA scoring tables.</span></div>
+      <div class="step"><span class="n">03</span><b>Project</b><span>Latest results, with the run held at today's estimate, scored on the official PFRA tables.</span></div>
     </div>
   </div>
 
@@ -93,7 +110,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
     <div class="card"><h3>What it can't tell you</h3><ul>
       <li>It's not medical advice. Sick or hurt beats any score.</li>
       <li>A projected score is a forecast, not an official result.</li>
-      <li>Run forecasts months out can miss by minutes; the range says how far.</li>
+      <li>Run forecasts months out can miss by minutes. The range shows past misses, not a guarantee.</li>
     </ul></div>
     <div class="card"><h3>Built on</h3><ul>
       <li>One web app for phone and desktop.</li>
@@ -108,7 +125,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   <div class="stack" style="gap:12px">
     <span class="lbl">Method</span>
     <h2>How the numbers are built</h2>
-    <nav class="mnav" aria-label="Method sections"><a href="#m-problem">Problem</a><a href="#m-inputs">Inputs and sources</a><a href="#m-model">The model</a><a href="#m-validation">Validation</a><a href="#m-limits">Limits</a><a href="#m-changelog">Changelog</a></nav>
+    <nav class="mnav" aria-label="Method sections"><a href="#m-problem">Problem</a><a href="#m-inputs">Inputs and sources</a><a href="#m-model">The model</a><a href="#m-case">Forecast case</a><a href="#m-validation">Validation</a><a href="#m-limits">Limits</a><a href="#m-changelog">Changelog</a></nav>
   </div>
 
   <section class="card msec" id="m-problem"><h3>Problem</h3>
@@ -135,7 +152,38 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   <section class="card msec" id="m-model"><h3>The model</h3>
     <p><b>Readiness.</b> Each signal is compared with your last 21 days, scored 0–100 and weighted as above. Missing signals drop out. 85+ Ready to push, 70+ Good to go, 55+ Keep it controlled, below that Recover today.</p>
     <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scored on the official AFPC chart rows for your age group and sex (effective 1 Mar 26). 75 passes, 90 is Excellent, and any missed minimum fails.</p>
-    <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula, then adjusted by how far your runs read from your latest trial (training runs tend to read fast). Test day holds today's estimate: in a backtest over every week of history, holding beat extending the trend at every distance from 2 to 26 weeks. The likely range is the middle 80% of those past misses at the same distance.</p>
+    <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula, then adjusted by how far your runs read from your latest trial (training runs tend to read fast). Test day holds today's estimate: in a backtest over every week of history, holding beat extending the trend at every distance from 2 to 26 weeks. The past-miss range is the middle 80% of those misses at the same distance; on the PT total it moves only the run.</p>
+    <p><b>What kind of number.</b> Watch readings and runs are measured. Readiness is a rule of thumb: the weights are set by hand and not yet tested against how sessions went. PT points are an official table lookup. Test-day run time and total are forecasts. Every number on these public pages, including the sample dashboard, is made up.</p>
+  </section>
+
+  <section class="card msec case" id="m-case"><h3>Forecast case: hold, or extend the trend?</h3>
+    <p class="muted small">How one test changed the 2-mile forecast. Findings are summaries; no personal runs, times or dates are shown.</p>
+    <div class="qa">
+      <div><span class="q">What prompted it</span><span>Run times had been improving, and the forecast extended that 9-week trend to test day. A trend can keep going, or it can stall. Which guess misses by less?</span></div>
+      <div><span class="q">The two approaches</span><span>From every past week, forecast the estimate 2 to 26 weeks ahead two ways: extend the recent trend (capped at 15 s a week), or hold today's estimate.</span></div>
+      <div><span class="q">What counted as the outcome</span><span>The estimate the model actually reached that many weeks later, from the runs logged by then. It is not a timed trial: only one trial exists so far.</span></div>
+      <div><span class="q">What changed the product</span><span>Holding missed by less than the trend at every distance tested, and damping the trend did not close the gap. The forecast now holds today's estimate and shows the range of past misses at that distance.</span></div>
+      <div><span class="q">What is still uncertain</span><span>Training runs tend to read faster than a timed effort, and a backtest against later run estimates cannot see that shared bias. So run estimates now adjust to the latest trial, though one trial cannot prove the adjustment. And a range built only from earlier weeks held about half the time 8+ weeks out, so the range is a floor on uncertainty, not 80% odds.</span></div>
+    </div>
+    <figure>
+      <svg viewBox="0 0 400 250" role="img" aria-labelledby="caseT caseD">
+        <title id="caseT">Synthetic illustration: holding versus extending a trend</title>
+        <desc id="caseD">Made-up weekly 2-mile estimates improve for ten weeks, then level off. Extending the trend keeps predicting faster times; holding the last estimate stays close to where the later estimates land.</desc>
+        <g stroke="var(--dz-rule)" stroke-width="1"><line x1="44" y1="28" x2="44" y2="200"/><line x1="44" y1="200" x2="388" y2="200"/></g>
+        <line x1="209" y1="20" x2="209" y2="200" stroke="var(--dz-muted)" stroke-width="1.5" stroke-dasharray="3 4"/>
+        <text x="215" y="32" fill="var(--dz-muted)" font-size="14" font-weight="600">forecast made</text>
+        <text x="38" y="44" fill="var(--dz-muted)" font-size="13" text-anchor="end">slow</text><text x="38" y="196" fill="var(--dz-muted)" font-size="13" text-anchor="end">fast</text>
+        <text x="44" y="222" fill="var(--dz-muted)" font-size="13">10 wk before</text><text x="388" y="222" fill="var(--dz-muted)" font-size="13" text-anchor="end">12 wk after</text>
+        <g fill="var(--dz-ink)"><circle cx="56" cy="40" r="3.5"/><circle cx="71" cy="48" r="3.5"/><circle cx="85" cy="44" r="3.5"/><circle cx="100" cy="61" r="3.5"/><circle cx="114" cy="67" r="3.5"/><circle cx="129" cy="73" r="3.5"/><circle cx="143" cy="83" r="3.5"/><circle cx="158" cy="85" r="3.5"/><circle cx="172" cy="97" r="3.5"/><circle cx="187" cy="99" r="3.5"/><circle cx="201" cy="107" r="3.5"/></g>
+        <line x1="209" y1="107" x2="376" y2="188" stroke="var(--dz-muted)" stroke-width="2.5" stroke-dasharray="7 6"/>
+        <line x1="209" y1="107" x2="376" y2="107" stroke="var(--dz-accent)" stroke-width="3"/>
+        <g fill="none" stroke="var(--run)" stroke-width="2"><circle cx="216" cy="103" r="4"/><circle cx="231" cy="111" r="4"/><circle cx="245" cy="101" r="4"/><circle cx="260" cy="116" r="4"/><circle cx="274" cy="105" r="4"/><circle cx="289" cy="97" r="4"/><circle cx="303" cy="109" r="4"/><circle cx="318" cy="120" r="4"/><circle cx="332" cy="103" r="4"/><circle cx="347" cy="95" r="4"/><circle cx="361" cy="107" r="4"/><circle cx="376" cy="114" r="4"/></g>
+        <text x="217" y="85" fill="var(--dz-accent)" font-size="14" font-weight="700">hold</text>
+        <text x="346" y="190" fill="var(--dz-muted)" font-size="14" font-weight="700" text-anchor="end">extend trend</text>
+      </svg>
+      <div class="key"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="var(--dz-ink)"/></svg>Estimates known at the time</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="none" stroke="var(--run)" stroke-width="2"/></svg>Estimates reached later</span></div>
+      <figcaption><span class="tag">Synthetic illustration</span> Made-up numbers that show the shape of the comparison, not a result. The finding above comes from the owner's own history, which stays private.</figcaption>
+    </figure>
   </section>
 
   <section class="card msec" id="m-validation"><h3>Validation</h3>
@@ -144,7 +192,8 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <li><span class="pill plan">Planned</span><span>Test readiness against session results and refit the weights.</span></li>
       <li><span class="pill done">Done</span><span>Every event, age group and sex checked cell by cell against the AFPC chart, with a test that fails if a row drifts.</span></li>
       <li><span class="pill done">Done</span><span>Backtest 2-mile forecasts from every past week against the estimate weeks later, versus simply holding the estimate.</span></li>
-      <li><span class="pill plan">Planned</span><span>Check the range against real time trials as more are logged (one so far).</span></li>
+      <li><span class="pill done">Done</span><span>Walk-forward check of the range: bands built only from earlier weeks, scored on the weeks that followed.</span></li>
+      <li><span class="pill plan">Planned</span><span>Check the forecast and its range against real time trials as more are logged (one so far).</span></li>
     </ul>
   </section>
 
@@ -153,12 +202,13 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <li>An estimate from your data, not a medical reading.</li>
       <li>Readiness needs about a week of data to start.</li>
       <li>Lifting and nutrition are only as fresh as the last export.</li>
-      <li>The range comes from your own past; bands built only from earlier weeks held about half the time 8+ weeks out, so treat it as a minimum.</li>
+      <li>The range comes from your own past and was scored against later estimates, not timed trials. Bands built only from earlier weeks held about half the time 8+ weeks out, so read it as a floor on uncertainty.</li>
     </ul>
   </section>
 
   <section class="card msec" id="m-changelog"><h3>Changelog</h3>
     <ul>
+      <li><span class="mono">2026-11-23</span> Overview leads with the question and two paths; Method adds the forecast case; the range is named for what it is, the range of past misses.</li>
       <li><span class="mono">2026-11-19</span> Today leads with the call, the signals behind it, and the PT outlook.</li>
       <li><span class="mono">2026-11-20</span> 2-mile forecast holds today's estimate with a tested likely range; run estimates calibrate to your latest trial.</li>
       <li><span class="mono">2026-11-18</span> Projections aim at the next test after one is taken; PT charts checked cell by cell; saves from two devices no longer overwrite each other.</li>
@@ -175,7 +225,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 (() => {
   const ov = document.getElementById("p-overview"), me = document.getElementById("p-method");
   let signed = false; try { signed = !!(localStorage.getItem("fitness-session") || localStorage.getItem("fitness-gh-token")); } catch (e) {}
-  if (signed) document.getElementById("seeRes").href = "./";
+  if (signed) { const b = document.getElementById("seeRes"); b.href = "./"; b.textContent = "Open your dashboard"; }
   const show = () => {
     const h = location.hash.slice(1), m = h === "method" || h.startsWith("m-");
     ov.hidden = m; me.hidden = !m;
