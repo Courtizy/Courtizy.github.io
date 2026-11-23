@@ -19,7 +19,7 @@
   const top = `
 <div class="dz-hub"><div class="dz-in"><a href="https://courtizy.github.io/">&larr; Decision Models</a><span>Jason C. Courtoy</span></div></div>
 <header class="dz-head"><div class="dz-in">
-  <div class="dz-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor"><path d="M32 10L54 52H10z"/></svg></div>
+  <div class="dz-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor"><path fill-rule="evenodd" d="M28.5 8.0 L35.5 8.0 L57.0 55.0 L7.0 55.0Z M28.9 22.4 L42.5 48.0 L15.3 48.0Z"/></svg></div>
   <div class="dz-name"><${page === "overview" ? "h1" : "div"} class="dz-h">Delta Readiness</${page === "overview" ? "h1" : "div"}><p>Am I ready for the PT test?</p></div>
   <div class="dz-right"><span class="dz-status"><i></i>Live</span><div class="dz-acts">${theme}${act}</div></div>
 </div></header>
