@@ -22,7 +22,7 @@
 .dz-in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
 /* hub bar */
-.dz-hub{background:var(--dz-bg);font:600 .78rem/1 var(--dz-body)}
+.dz-hub{background:var(--dz-bg);font:600 .78rem/1 var(--dz-body);padding-top:env(safe-area-inset-top,0px)}  /* clear the notch and rounded corners when the page runs edge to edge */
 .dz-hub .dz-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px}
 .dz-hub a{display:inline-flex;align-items:center;min-height:44px;color:var(--dz-ink);text-decoration:none}
 .dz-hub a:hover{color:var(--dz-accent)}
@@ -100,7 +100,7 @@ html.dz-app body{background-color:var(--dz-bg)}
 @media (max-width:520px){
   html.dz-app .dz-hub,html.dz-app .dz-tabbar,html.dz-app .dz-name p,html.dz-app #dzOut{display:none}
   html.dz-app .dz-menu{display:block}
-  html.dz-app .dz-head{border-top-width:3px}
+  html.dz-app .dz-head{border-top-width:3px;padding-top:env(safe-area-inset-top,0px)}
   html.dz-app .dz-head .dz-in{padding-block:6px}
   html.dz-app .dz-tile{width:30px;height:30px;border-radius:8px}
   html.dz-app .dz-tile svg{width:17px;height:17px}
