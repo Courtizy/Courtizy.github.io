@@ -64,6 +64,10 @@
 .dz-foot{margin-top:32px;font-size:.76rem;color:var(--dz-muted)}
 .dz-foot .dz-in{padding-block:16px 28px;display:grid;gap:4px;border-top:1px solid var(--dz-rule)}
 .dz-foot p{margin:0}
+.dz-flinks{display:flex;gap:4px 18px;flex-wrap:wrap;margin-bottom:4px}
+.dz-flinks a{color:var(--dz-ink);font:700 .84rem var(--dz-body);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.dz-flinks a:hover{color:var(--dz-accent)}
+.dz-flinks a:focus-visible{outline:2px solid var(--dz-accent);outline-offset:2px}
 html.dz-app .dz-foot{margin-top:0}
 html.dz-app body{background-color:var(--dz-bg)}
 @media (max-width:899px){html.dz-app .dz-foot .dz-in{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
