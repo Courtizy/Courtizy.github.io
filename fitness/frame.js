@@ -12,18 +12,18 @@
   const results = signedIn ? base : base + "demo.html";
   const tab = (k, href, label) => `<a href="${href}"${k === page ? ' aria-current="page"' : ""}>${label}</a>`;
   /* signed-in app on a phone: the hub bar and page tabs fold into this menu, so the header is one row (decided 2026-11-23) */
-  const menu = mode === "app" ? `<details class="dz-menu"><summary class="dz-btn dz-icon" aria-label="Menu: Decision Models, Overview, Method, sign out"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
-  <nav class="dz-pop" aria-label="Pages"><a href="https://courtizy.github.io/">&larr; Decision Models</a><a href="${base}overview.html">Overview</a><a href="${base}overview.html#method">Method</a><button type="button" id="dzOut2">Sign out</button><span>Jason C. Courtoy</span></nav></details>` : "";
+  const menu = mode === "app" ? `<details class="dz-menu"><summary class="dz-btn dz-icon" aria-label="Menu: Decision Models, Overview, Method, Sign Out"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+  <nav class="dz-pop" aria-label="Pages"><a href="https://courtizy.github.io/">&larr; Decision Models</a><a href="${base}overview.html">Overview</a><a href="${base}overview.html#method">Method</a><button type="button" id="dzOut2">Sign Out</button><span>Jason C. Courtoy</span></nav></details>` : "";
   const act = mode === "app"
-    ? `<button type="button" class="dz-btn" id="dzOut">Sign out</button>${menu}`
-    : signedIn ? `<a class="dz-btn dz-primary" href="${base}">Open dashboard</a>`
-    : page === "signin" ? "" : `<a class="dz-btn dz-primary" href="${base}?signin">Sign in</a>`;
+    ? `<button type="button" class="dz-btn" id="dzOut">Sign Out</button>${menu}`
+    : signedIn ? `<a class="dz-btn dz-primary" href="${base}">Open Dashboard</a>`
+    : page === "signin" ? "" : `<a class="dz-btn dz-primary" href="${base}?signin">Sign In</a>`;
   const theme = mode === "public" ? `<button type="button" class="dz-btn dz-icon" id="dzTheme" aria-label="Switch light or dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>` : "";
   const top = `
 <div class="dz-hub"><div class="dz-in"><a href="https://courtizy.github.io/">&larr; Decision Models</a><span>Jason C. Courtoy</span></div></div>
 <header class="dz-head"><div class="dz-in">
   <div class="dz-tile" aria-hidden="true"><svg viewBox="0 0 64 64" fill="currentColor"><path fill-rule="evenodd" d="M28.5 8.0 L35.5 8.0 L57.0 55.0 L7.0 55.0Z M28.9 22.4 L42.5 48.0 L15.3 48.0Z"/></svg></div>
-  <div class="dz-name"><${page === "overview" ? "h1" : "div"} class="dz-h">Delta Readiness</${page === "overview" ? "h1" : "div"}><p>Am I ready for the PT test?</p></div>
+  <div class="dz-name"><${page === "overview" ? "h1" : "div"} class="dz-h">Delta Readiness</${page === "overview" ? "h1" : "div"}><p>Am I ready for test day?</p></div>
   <div class="dz-right"><span class="dz-status"><i></i>Live</span><div class="dz-acts">${theme}${act}</div></div>
 </div></header>
 <nav class="dz-tabbar" aria-label="Pages"><div class="dz-in dz-tabs">${tab("overview", base + "overview.html", "Overview")}${tab("results", results, "Results")}${tab("method", base + "overview.html#method", "Method")}</div></nav>

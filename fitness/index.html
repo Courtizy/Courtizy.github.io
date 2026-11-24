@@ -35,10 +35,10 @@ a{color:var(--brand)}
 <body>
 <div class="gate" id="gate" hidden>
   <div class="card">
-    <h1>Sign in</h1>
+    <h1>Sign In</h1>
     <div id="pwBox" hidden>
     <p>This page is private. Enter your dashboard password.</p>
-    <form id="pf" action="#" method="post"><input name="username" type="text" autocomplete="username" value="fitness-dashboard" readonly hidden><input id="pw" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password"><button type="submit">Open dashboard</button></form>
+    <form id="pf" action="#" method="post"><input name="username" type="text" autocomplete="username" value="fitness-dashboard" readonly hidden><input id="pw" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password"><button type="submit">Open Dashboard</button></form>
     <p>On iPhone, choose <b>Save Password</b> when asked, and Face ID fills it next time. You stay signed in for 30 days.</p>
     <p><a href="#" id="useTok">Use a GitHub token instead</a></p>
     </div>
@@ -50,7 +50,7 @@ a{color:var(--brand)}
       <li>Permissions: <b>Contents: Read and write</b>. Nothing else.</li>
     </ol>
     <!-- username + current-password lets iPhone Passwords save the token once and fill it with Face ID -->
-    <form id="f" action="#" method="post"><input name="username" type="text" autocomplete="username" value="fitness" readonly hidden><input id="tok" name="password" type="password" autocomplete="current-password" placeholder="github_pat_…" aria-label="GitHub token"><button type="submit">Open dashboard</button></form>
+    <form id="f" action="#" method="post"><input name="username" type="text" autocomplete="username" value="fitness" readonly hidden><input id="tok" name="password" type="password" autocomplete="current-password" placeholder="github_pat_…" aria-label="GitHub token"><button type="submit">Open Dashboard</button></form>
     <p>On iPhone, choose <b>Save Password</b> when asked, and Face ID fills it next time. Adding this page to your Home Screen (Share → Add to Home Screen) also keeps you signed in longer.</p>
     </div>
     <p id="msg" class="err" role="alert"></p>
