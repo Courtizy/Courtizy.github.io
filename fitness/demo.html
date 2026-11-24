@@ -1109,7 +1109,7 @@ details.qg:not([open]){padding-bottom:6px}
   <section id="pt" aria-labelledby="hpt" data-tab="test">
     <h2 id="hpt">2-mile run: PT test readiness <span class="cf m" data-cf></span></h2>
     <p class="take" id="tkPt" hidden></p>
-    <p>USAF PFRA 2-mile run, your age group: <b>13:56</b> or faster earns the full 50 points; <b>21:16</b> is the slowest passing time (35 points). From the AFPC scoring charts effective 1 March 2026 (corrected 17 March 2026); confirm against the current AFPC chart, and note the bracket changes at 40.</p>
+    <p>USAF PFRA 2-mile run, your age group: <b>13:56</b> or faster earns the full 50 points; <b>21:16</b> is the slowest passing time (35 points). From the AFPC scoring charts effective 1 March 2026; confirm against the current AFPC chart, and note the bracket changes at 40.</p>
     <div class="controls ptCtl">
       <label class="inline">Goal time <input type="text" id="ptGoal" inputmode="numeric" placeholder="mm:ss" size="6"></label>
       <label class="inline">Test date <input type="date" id="ptDate"></label>
@@ -7480,7 +7480,7 @@ const SHEETS = {
       <div class="a-why">Six inputs, each scored against your own last 21 days, then weighted. Tap one to see its readings.</div>
       ${bandKey(R.score) === "illness" ? `<div class="a-stale">${tag("bad", "Possible Illness")}<span>${readyCall()}</span></div>` : ""}
       <div class="a-card a-rrows">${R.c.map(row).join("")}</div>
-      <div class="a-note">Hand-set weights. Tested on 23 sessions so far; not yet shown to predict how sessions go. An estimate, not a medical reading.</div>`;
+      <div class="a-note">Hand-set weights. Tested on 25 sessions so far; not yet shown to predict how sessions go. An estimate, not a medical reading.</div>`;
   },
   /* Main Lifts: four tiles, each opens that lift */
   lifts: () => {
@@ -7676,7 +7676,7 @@ SHEET.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape" && sheetState && !document.querySelector("#ccPop:not([hidden])")) closeSheet(); });
 
 /* ---------- USAF PFRA calculator (2026 standards: cardio 50, waist-to-height 20, strength 15, core 15) ----------
-   Full step charts from the official AFPC "PFRA Scoring Charts" PDF (effective 1 Mar 26, as corrected 17 Mar 26),
+   Full step charts from the official AFPC "PFRA Scoring Charts" PDF (effective 1 Mar 26; a 17 Mar 26 correction is referenced but not yet checked),
    transcribed 2026-05-20. Each age group is a list of points/threshold rows, best first; a result earns the first row
    it meets (at least the reps or hold, or at most the run time). Results short of the starred minimum row fail. */
 /* tables and scoring: src/engine/pt-score.js */
@@ -7814,7 +7814,7 @@ function ptSheet() {
       <div class="a-note">Blank boxes use your data. Type a number to try a what-if.</div></div>
     <div class="a-card"><span class="a-lbl">Readiness</span><div class="a-why">${ptReady()}</div></div>
     <div class="a-card"><span class="a-lbl">Run Plan, Test Prep and Body</span>${classic(["pt", "ptPrep", "ptb"])}</div>
-    <div class="a-note">USAF PFRA, March 2026 (DAFMAN 36-2905): cardio 50, waist 20, strength 15, core 15. Points come from the AFPC chart rows (effective 1 Mar 26, corrected 17 Mar 26). Results not entered here are estimated from your data, and test-day numbers are forecasts.</div>`;
+    <div class="a-note">USAF PFRA, March 2026 (DAFMAN 36-2905): cardio 50, waist 20, strength 15, core 15. Points come from the AFPC chart rows (effective 1 Mar 26). Results not entered here are estimated from your data, and test-day numbers are forecasts.</div>`;
 }
 SHEET.addEventListener("input", e => {
   const el = e.target.closest("[data-pf]"); if (!el || !sheetState || sheetState.key !== "ptcalc") return;

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Delta Readiness · Jason C. Courtoy</title>
-<meta name="description" content="Ready for test day? A daily train-or-rest call and a Physical Fitness Assessment forecast, both built from your own watch and training data.">
+<meta name="description" content="Ready for test day? A daily train-or-ease-off call and a Physical Fitness Assessment forecast, both built from your own watch and training data.">
 <meta name="apple-mobile-web-app-title" content="Delta">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -129,7 +129,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
     <div class="ov-lead">
       <span class="lbl">04 · Readiness</span>
       <h2>Ready for test day? Check every morning.</h2>
-      <p>A daily train-or-rest call and a Physical Fitness Assessment forecast, both built from your own watch and training data. The forecast updates with every workout. Its range comes from how far your past forecasts missed, and those misses have been smaller closer to test day.</p>
+      <p>A daily train-or-ease-off call and a Physical Fitness Assessment forecast, both built from your own watch and training data. The forecast updates with every workout and shows a range built from your own history.</p>
       <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See the demo</a><a class="dz-btn" href="#method">Read the method</a></div>
       <div class="feats">
         <div class="feat"><b>One call each morning</b><span>Train as planned or ease off, from your recovery signals and recent training.</span></div>
@@ -208,7 +208,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   </section>
 
   <section class="card msec" id="m-model"><h3>The model</h3>
-    <p><b>Readiness.</b> HRV (7-day average), resting heart rate, breathing rate and wrist temperature are compared with your last 21 days; sleep with a 7.5-hour target; training load with your 4-week average. Each is scored 0–100 and weighted as above, and missing signals drop out. 70 and up reads Signals Normal (train as planned), 55 to 69 Signals Below Normal (consider keeping hard efforts controlled), under 55 Signals Well Below Normal (consider an easy day). Wrist temperature and resting heart rate rising together override the score with Possible Illness. The weights are set by hand and not yet tested against how sessions went.</p>
+    <p><b>Readiness.</b> HRV (7-day average), resting heart rate, breathing rate and wrist temperature are compared with your last 21 days; sleep with a 7.5-hour target; training load with your 4-week average. Each is scored 0–100 and weighted as above, and missing signals drop out. 70 and up reads Signals Normal (train as planned), 55 to 69 Signals Below Normal (consider keeping hard efforts controlled), under 55 Signals Well Below Normal (consider an easy day). Raised wrist temperature with a raised resting heart rate or breathing rate overrides the score with Possible Illness. This rule comes from the research literature and hasn't been tested on this data. The weights are set by hand and not yet tested against how sessions went.</p>
     <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scored on the official AFPC chart rows for your age group and sex (effective 1 Mar 26). 75 passes, 90 is Excellent, and any missed minimum fails.</p>
     <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula, then adjusted by how far your runs read from your latest trial (training runs tend to read fast). Test day holds today's estimate: in a backtest over every week of history, holding beat extending the trend at every distance from 2 to 26 weeks. The past-miss range is the middle 80% of those misses at the same distance; on the PT total it moves only the run.</p>
     <p><b>What kind of number.</b> Watch readings and runs are measured. Readiness is a rule of thumb: the weights are set by hand and not yet tested against how sessions went. PT points are an official table lookup. Test-day run time and total are forecasts. Every number on these public pages, including the sample dashboard, is made up.</p>
@@ -280,10 +280,10 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   <section class="card msec" id="m-validation"><h3>Validation</h3>
     <ul class="chk">
       <li><span class="pill done">Done</span><span>2-mile estimate matches the detailed dashboard on the same data.</span></li>
-      <li><span class="pill done">Done</span><span>Readiness checked against 23 sessions: no link to how sessions went yet, so the score says whether to ease off, never how a session will go.</span></li>
+      <li><span class="pill done">Done</span><span>Readiness checked against 25 sessions: no link to how sessions went yet, so the score says whether to ease off, never how a session will go.</span></li>
       <li><span class="pill plan">Planned</span><span>Refit the readiness weights as more sessions are logged.</span></li>
       <li><span class="pill done">Done</span><span>Range coverage, walk-forward: ranges held about 7 in 10 times at 2 weeks out, 6 in 10 at 4 weeks and about half at 8 to 12 weeks. No range is shown beyond 12 weeks.</span></li>
-      <li><span class="pill done">Done</span><span>Every event, age group and sex checked cell by cell against the AFPC chart, with a test that fails if a row drifts.</span></li>
+      <li><span class="pill done">Done</span><span>Every event, age group and sex checked cell by cell against the AFPC chart effective 1 Mar 26, with a test that fails if a row drifts.</span></li>
       <li><span class="pill done">Done</span><span>Backtest 2-mile forecasts from every past week against the estimate weeks later, versus simply holding the estimate.</span></li>
       <li><span class="pill done">Done</span><span>Walk-forward check of the range: bands built only from earlier weeks, scored on the weeks that followed.</span></li>
       <li><span class="pill plan">Planned</span><span>Check the forecast and its range against real time trials as more are logged (one so far).</span></li>
@@ -295,6 +295,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <li>An estimate from your data, not a medical reading.</li>
       <li>Readiness needs about a week of data to start.</li>
       <li>Lifting and nutrition are only as fresh as the last export.</li>
+      <li>A 17 Mar 26 correction is referenced but not yet checked.</li>
       <li>The range comes from your own past and was scored against later estimates, not timed trials. Bands built only from earlier weeks held about half the time 8+ weeks out, so read it as a floor on uncertainty.</li>
     </ul>
   </section>
@@ -304,7 +305,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <li><span class="mono">2026-11-24</span> Overview rebuilt around the app itself, with phone screenshots taken from the demo; readiness bands renamed to describe the signals (Signals Normal, Below Normal, Well Below Normal, Possible Illness); Method states the readiness and range checks plainly.</li>
       <li><span class="mono">2026-11-23</span> Overview leads with the question and two paths; Method adds the forecast case; the range is named for what it is, the range of past misses.</li>
       <li><span class="mono">2026-11-19</span> Today leads with the call, the signals behind it, and the PT outlook.</li>
-      <li><span class="mono">2026-11-20</span> 2-mile forecast holds today's estimate with a tested likely range; run estimates calibrate to your latest trial.</li>
+      <li><span class="mono">2026-11-20</span> 2-mile forecast holds today's estimate with a tested likely range (now called the range); run estimates calibrate to your latest trial.</li>
       <li><span class="mono">2026-11-18</span> Projections aim at the next test after one is taken; PT charts checked cell by cell; saves from two devices no longer overwrite each other.</li>
       <li><span class="mono">2026-10-24</span> Tighter copy across the app and these pages.</li>
       <li><span class="mono">2026-10-23</span> Joined the Decision Models frame, with a public Overview, Method and demo.</li>
