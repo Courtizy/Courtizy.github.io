@@ -1,6 +1,8 @@
 /* Delta Readiness frame. Include with
      <script src="frame.js" data-page="overview|method|results|signin" data-mode="public|demo|app"></script>
-   It adds the hub bar, app header, Overview · Results · Method tabs and footer around whatever the page shows. */
+   It adds the hub bar, app header, Overview · Results · Method tabs (app and demo only) and footer around whatever the page shows.
+   Public pages have no tab bar: the Overview previews stand in for the demo tab, the header keeps Sign In, and Method is a link
+   at the bottom of the page (Jason, 24 Nov 2026). */
 (() => {
   const me = document.currentScript, page = me.dataset.page || "results", mode = me.dataset.mode || "public";
   const base = new URL(".", me.src).href;
@@ -28,9 +30,9 @@
   <div class="dz-name"><${page === "overview" ? "h1" : "div"} class="dz-h">Delta Readiness</${page === "overview" ? "h1" : "div"}><p>Am I ready for test day?</p></div>
   <div class="dz-right"><span class="dz-status"><i></i>Live</span><div class="dz-acts">${theme}${act}</div></div>
 </div></header>
-<nav class="dz-tabbar" aria-label="Pages"><div class="dz-in dz-tabs">${tab("overview", base + "overview.html", "Overview")}${tab("results", results, "Results")}${tab("method", base + "overview.html#method", "Method")}</div></nav>
+${mode !== "public" ? `<nav class="dz-tabbar" aria-label="Pages"><div class="dz-in dz-tabs">${tab("overview", base + "overview.html", "Overview")}${tab("results", results, "Results")}${tab("method", base + "overview.html#method", "Method")}</div></nav>` : ""}
 ${mode === "demo" ? `<div class="dz-strip"><div class="dz-in"><span class="dz-tag">Demo</span><span>Sample data. Explore freely; nothing is saved.</span></div></div>` : ""}`;
-  const foot = `<footer class="dz-foot"><div class="dz-in"><p>Personal project · public or synthetic data only · not medical advice · not endorsed by DoD or the U.S. Air Force</p><p>PT scoring per DAFMAN 36-2905 (PFRA, March 2026).</p></div></footer>`;
+  const foot = `<footer class="dz-foot"><div class="dz-in"><nav class="dz-flinks" aria-label="More about Delta Readiness"><a href="${base}overview.html">Overview</a><a href="${base}overview.html#method">Method</a></nav><p>Personal project · public or synthetic data only · not medical advice · not endorsed by DoD or the U.S. Air Force</p><p>PT scoring per DAFMAN 36-2905 (PFRA, March 2026).</p></div></footer>`;
   const mount = () => {
     if (document.querySelector(".dz-head")) return;
     document.body.insertAdjacentHTML("afterbegin", top);

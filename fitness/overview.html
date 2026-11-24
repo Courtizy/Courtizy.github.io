@@ -25,6 +25,9 @@ a{color:var(--dz-accent)}
 .card{position:relative;background:var(--dz-panel);border-radius:22px;padding:20px;box-shadow:var(--dz-shadow)}
 .stack{display:grid;gap:24px}
 .btns{display:flex;flex-wrap:wrap;gap:10px}
+.ov-meth p{margin:0 0 12px;max-width:62ch}
+.mback{align-self:flex-start;font:700 .84rem var(--dz-body);color:var(--dz-muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.mback:hover{color:var(--dz-accent)}
 .pair{display:flex;flex-wrap:wrap;gap:16px}
 .pair>.card{flex:1 1 340px;min-width:0}
 ul{margin:0;padding-left:18px}
@@ -130,7 +133,6 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <span class="lbl">04 · Readiness</span>
       <h2>Ready for test day? Check every morning.</h2>
       <p>A daily train-or-ease-off call and a Physical Fitness Assessment forecast, both built from your own watch and training data. The forecast updates with every workout and shows a range built from your own history.</p>
-      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See the demo</a><a class="dz-btn" href="#method">Read the method</a></div>
       <div class="feats">
         <div class="feat"><b>One call each morning</b><span>Train as planned or ease off, from your recovery signals and recent training.</span></div>
         <div class="feat"><b>Every number shows its work</b><span>Tap any score to see what built it, down to the raw readings.</span></div>
@@ -177,10 +179,16 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
       <li><b>Shows:</b> joining messy data sources, personalized forecasting, and product design</li>
     </ul></section>
   </div>
+
+  <section class="card ov-meth" aria-labelledby="ov-m-h"><h3 id="ov-m-h">How the numbers are built</h3>
+    <p>The inputs, the model, the forecast study, how it was tested and what it can't do yet.</p>
+    <div class="btns"><a class="dz-btn" href="#method">Read the method</a></div>
+  </section>
 </div>
 
 <div id="p-method" class="stack" hidden>
   <div class="stack" style="gap:12px">
+    <a class="mback" href="overview.html">&larr; Overview</a>
     <span class="lbl">Method</span>
     <h2>How the numbers are built</h2>
     <nav class="mnav" aria-label="Method sections"><a href="#m-problem">Problem</a><a href="#m-inputs">Inputs and sources</a><a href="#m-model">The model</a><a href="#m-case">Forecast study</a><a href="#m-validation">Validation</a><a href="#m-limits">Limits</a><a href="#m-changelog">Changelog</a></nav>
@@ -302,6 +310,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 
   <section class="card msec" id="m-changelog"><h3>Changelog</h3>
     <ul>
+      <li><span class="mono">2026-11-24</span> Public pages drop the tab bar: the Overview previews show the app in place of the demo link, Sign In stays in the header, and Method is linked from the bottom of the page.</li>
       <li><span class="mono">2026-11-24</span> Overview rebuilt around the app itself, with phone screenshots taken from the demo; readiness bands renamed to describe the signals (Signals Normal, Below Normal, Well Below Normal, Possible Illness); Method states the readiness and range checks plainly.</li>
       <li><span class="mono">2026-11-23</span> Overview leads with the question and two paths; Method adds the forecast case; the range is named for what it is, the range of past misses.</li>
       <li><span class="mono">2026-11-19</span> Today leads with the call, the signals behind it, and the PT outlook.</li>
@@ -319,8 +328,6 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 <script>
 (() => {
   const ov = document.getElementById("p-overview"), me = document.getElementById("p-method");
-  let signed = false; try { signed = !!(localStorage.getItem("fitness-session") || localStorage.getItem("fitness-gh-token")); } catch (e) {}
-  if (signed) { const b = document.getElementById("seeRes"); b.href = "./"; b.textContent = "Open your dashboard"; }
   const show = () => {
     const h = location.hash.slice(1), m = h === "method" || h.startsWith("m-");
     ov.hidden = m; me.hidden = !m;
