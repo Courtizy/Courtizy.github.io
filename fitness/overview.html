@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Delta Readiness · Jason C. Courtoy</title>
-<meta name="description" content="How is training tracking toward test day? A daily training call from your own watch data, and a USAF PT test outlook that shows how far its forecasts have missed.">
+<meta name="description" content="Ready for test day? A daily train-or-rest call and a Physical Fitness Assessment forecast, both built from your own watch and training data.">
 <meta name="apple-mobile-web-app-title" content="Delta">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -24,26 +24,68 @@ a{color:var(--dz-accent)}
 .mono{font-variant-numeric:tabular-nums;font-weight:600}
 .card{position:relative;background:var(--dz-panel);border-radius:22px;padding:20px;box-shadow:var(--dz-shadow)}
 .stack{display:grid;gap:24px}
-.hero{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
-.lead{flex:999 1 460px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.lead h2{font-size:clamp(2rem,5vw,2.9rem)}
-.lead p{font-size:1.06rem;color:var(--dz-ink)}
 .btns{display:flex;flex-wrap:wrap;gap:10px}
-.answer{flex:1 1 300px;display:grid;gap:14px;align-content:start;min-width:0}
-.answer .row{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;border-top:1px solid var(--dz-rule);padding-top:10px}
-.answer .row:first-of-type{border-top:0;padding-top:0}
-.answer b{font:800 1.5rem/1 var(--dz-display);letter-spacing:-.02em;color:var(--dz-accent)}
-.answer span{font-size:.92rem;color:var(--dz-muted)}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.step{background:var(--dz-panel);border-radius:18px;padding:16px;display:grid;gap:6px;align-content:start;box-shadow:var(--dz-shadow)}
-.step .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 .8rem var(--dz-body);color:var(--dz-on-accent);background:var(--dz-accent)}
-.step b{font:800 1.1rem var(--dz-display);letter-spacing:-.01em}
-.step span{font-size:.94rem;color:var(--dz-muted)}
 .pair{display:flex;flex-wrap:wrap;gap:16px}
 .pair>.card{flex:1 1 340px;min-width:0}
 ul{margin:0;padding-left:18px}
 li{margin:0 0 6px}
 .muted{color:var(--dz-muted)}
+/* overview (roadmap Phase 4): hero with a phone, Inside the app (4 + 3 phones; one swipe strip on a phone) */
+.ov{display:grid;gap:44px}
+.ov>*{min-width:0}
+.ov h2{font-size:clamp(1.6rem,3.4vw,2.1rem)}
+.ov-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:center}
+.ov-lead{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ov-lead h2{font-size:clamp(2rem,4.6vw,3rem);line-height:1.06}
+.ov-lead>p{font-size:1.06rem;color:var(--dz-muted);margin:0}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:10px}
+.feat{background:var(--dz-panel);border-radius:18px;padding:14px 16px;box-shadow:var(--dz-shadow);display:grid;gap:4px;align-content:start}
+.feat b{font:700 .98rem/1.3 var(--dz-display)}
+.feat span{font-size:.9rem;color:var(--dz-muted);line-height:1.45}
+.ov-heroph{margin:0;display:grid;justify-items:center;gap:10px}
+.ov-heroph figcaption{font-size:.85rem;color:var(--dz-muted)}
+/* phone frame: dark bezel, rounded screen, a blank safe area above the app header; the image is the top 844px of a 390px screen */
+.ph{--w:240px;width:var(--w);flex:none;padding:calc(var(--w) * .042);border-radius:calc(var(--w) * .19);background:#101814;box-shadow:0 20px 40px rgba(16,24,20,.16)}
+.ph.big{--w:280px}
+.ph .scr{border-radius:calc(var(--w) * .15);overflow:hidden;background:#F2F4F1}
+.ph .safe{height:calc(var(--w) * .11);background:#FFFFFF}
+.ph .safe.dim{background:#8E918F}
+.ph img{display:block;width:100%;height:auto}
+.ov-head{display:grid;gap:4px;margin-bottom:18px}
+.ov-head p{margin:0;color:var(--dz-muted)}
+.strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:28px 16px;justify-items:center}
+.shot{margin:0;grid-column:span 3;display:grid;justify-items:center;gap:10px;text-align:center;max-width:250px}
+.shot.sm{grid-column:span 4}
+.shot.sm .ph{--w:210px}
+.shot figcaption{display:grid;gap:2px}
+.shot figcaption b{font:700 .95rem/1.3 var(--dz-display)}
+.shot figcaption span{font-size:.84rem;color:var(--dz-muted)}
+.strip .more{grid-column:1/-1;justify-self:start;font:800 1.15rem/1.3 var(--dz-display);margin:8px 0 0}
+.dots{display:none}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+.step{background:var(--dz-panel);border-radius:18px;padding:16px;display:grid;grid-template-columns:28px 1fr;gap:4px 12px;align-content:start;box-shadow:var(--dz-shadow)}
+.step .n{grid-row:span 2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 .85rem var(--dz-body);color:var(--dz-accent);background:color-mix(in srgb,var(--dz-accent) 14%,transparent)}
+.step b{font:700 1rem var(--dz-display)}
+.step span{font-size:.92rem;color:var(--dz-muted)}
+@media (max-width:900px){
+  /* phone: headline and buttons, then the phone, then the feature cards */
+  .ov-hero{display:flex;flex-direction:column;align-items:stretch;gap:14px}
+  .ov-lead{display:contents}
+  .ov-heroph{order:1;margin:12px 0}
+  .feats{order:2;grid-template-columns:1fr;margin-top:0}
+  .ph.big{--w:260px}
+  /* one sideways strip with all seven screens, snap scrolling, a peek of the next phone, dots */
+  .ov-inside{margin-inline:-16px}
+  .ov-head{padding-inline:16px}
+  .strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 8px;scrollbar-width:none;justify-items:initial}
+  .strip::-webkit-scrollbar{display:none}
+  .strip .more{display:none}
+  .shot,.shot.sm{flex:none;width:250px;scroll-snap-align:center}
+  .shot .ph,.shot.sm .ph{--w:236px}
+  .dots{display:flex;justify-content:center;gap:6px;margin-top:6px}
+  .dots i{width:6px;height:6px;border-radius:3px;background:var(--dz-rule);transition:width .2s}
+  .dots i.on{width:18px;background:var(--dz-accent)}
+}
 /* method */
 .mnav{display:flex;flex-wrap:wrap;gap:6px}
 .mnav a{font:700 .84rem var(--dz-body);text-decoration:none;color:var(--dz-ink);background:var(--dz-panel);border-radius:999px;padding:0 14px;min-height:44px;display:inline-flex;align-items:center;box-shadow:var(--dz-shadow)}
@@ -82,44 +124,58 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 <body>
 <main class="dz-in">
 
-<div id="p-overview" class="stack">
-  <div class="hero">
-    <div class="lead">
-      <span class="lbl">Side project · Readiness</span>
-      <h2>How is training tracking toward test day?</h2>
-      <p>Delta Readiness pulls watch, run, lifting and food data into one daily call (push or back off) and a test-day outlook that says how far it has missed before.</p>
-      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">Explore the sample dashboard</a><a class="dz-btn" href="#m-case">Read the forecast study</a></div>
-      <p class="muted small">The sample dashboard uses made-up data. The study shows why the run forecast stopped extending recent trends.</p>
+<div id="p-overview" class="ov">
+  <section class="ov-hero">
+    <div class="ov-lead">
+      <span class="lbl">04 · Readiness</span>
+      <h2>Ready for test day? Check every morning.</h2>
+      <p>A daily train-or-rest call and a Physical Fitness Assessment forecast, both built from your own watch and training data. The forecast updates with every workout. Its range comes from how far your past forecasts missed, and those misses have been smaller closer to test day.</p>
+      <div class="btns"><a class="dz-btn dz-primary" id="seeRes" href="demo.html">See the demo</a><a class="dz-btn" href="#method">Read the method</a></div>
+      <div class="feats">
+        <div class="feat"><b>One call each morning</b><span>Train as planned or ease off, from your recovery signals and recent training.</span></div>
+        <div class="feat"><b>Every number shows its work</b><span>Tap any score to see what built it, down to the raw readings.</span></div>
+        <div class="feat"><b>A forecast built from your data</b><span>Your runs, lifts and measurements feed a projected score and its range, updated after every session.</span></div>
+      </div>
     </div>
-    <div class="card answer" aria-label="What it tells you">
-      <span class="lbl">Every morning</span>
-      <div class="row"><b>0–100</b><span>Readiness against your own baseline. <i class="kind">Rule of thumb</i></span></div>
-      <div class="row"><b>100 pts</b><span>PT score from your latest results. <i class="kind">Official table</i></span></div>
-      <div class="row"><b>2-mile</b><span>Test-day run time, with the range of past misses. <i class="kind">Forecast</i></span></div>
-    </div>
-  </div>
+    <figure class="ov-heroph"><div class="ph"><div class="scr"><div class="safe dim"></div><img src="ov-today.jpg" width="390" height="844" loading="lazy" alt="The Today screen of Delta Readiness, showing demo data: the readiness score and call, today's session and the test forecast."></div></div><figcaption>The Today screen, demo data</figcaption></figure>
+  </section>
 
-  <div class="stack" style="gap:14px">
-    <span class="lbl">How it works</span>
-    <div class="steps">
-      <div class="step"><span class="n">01</span><b>Sync</b><span>Apple Health, Strava, Liftosaur and MacroFactor in one place.</span></div>
-      <div class="step"><span class="n">02</span><b>Score</b><span>Each signal measured against your last 21 days, not a population average.</span></div>
-      <div class="step"><span class="n">03</span><b>Project</b><span>Latest results, with the run held at today's estimate, scored on the official PFRA tables.</span></div>
+  <section class="ov-inside" aria-labelledby="ov-in-h">
+    <div class="ov-head"><h2 id="ov-in-h">Inside the app</h2><p>Progress toward test day and the plan to get there, then the detail behind each number. Shown with demo data.</p></div>
+    <div class="strip" id="ovStrip" role="region" aria-label="App screens, demo data" tabindex="0">
+    <figure class="shot"><div class="ph"><div class="scr"><div class="safe"></div><img src="ov-test.jpg" width="390" height="844" loading="lazy" alt="Progress, Test screen with demo data: projected test score, range and points by component."></div></div><figcaption><b>Track the test, not just workouts</b><span>Projected score, range and points by component. Demo data.</span></figcaption></figure>
+    <figure class="shot"><div class="ph"><div class="scr"><div class="safe"></div><img src="ov-body.jpg" width="390" height="844" loading="lazy" alt="Progress, Body screen with demo data: weight trend, food and waist, each against its target."></div></div><figcaption><b>See the body trend</b><span>Weight, food and waist, each against its target. Demo data.</span></figcaption></figure>
+    <figure class="shot"><div class="ph"><div class="scr"><div class="safe"></div><img src="ov-training.jpg" width="390" height="844" loading="lazy" alt="Progress, Training screen with demo data: hard sets per muscle, main lifts and weekly running miles."></div></div><figcaption><b>Training at a glance</b><span>Hard sets, main lifts and miles against plan. Demo data.</span></figcaption></figure>
+    <figure class="shot"><div class="ph"><div class="scr"><div class="safe"></div><img src="ov-plan.jpg" width="390" height="844" loading="lazy" alt="Plan screen with demo data: the current training block, this week's sessions and the dates coming up."></div></div><figcaption><b>Know what's next</b><span>This week's sessions and the dates that matter. Demo data.</span></figcaption></figure>
+      <h3 class="more">More inside: tap any number to see what built it</h3>
+    <figure class="shot sm"><div class="ph"><div class="scr"><div class="safe dim"></div><img src="ov-score.jpg" width="390" height="844" loading="lazy" alt="What Built Today's Score detail screen with demo data: the inputs behind the readiness score."></div></div><figcaption><b>What Built the Score</b><span>Every daily call opens to its inputs. Demo data.</span></figcaption></figure>
+    <figure class="shot sm"><div class="ph"><div class="scr"><div class="safe dim"></div><img src="ov-lifts.jpg" width="390" height="844" loading="lazy" alt="Main Lifts detail screen with demo data: four lifts, each with its estimate and recent range."></div></div><figcaption><b>Main Lifts</b><span>Four lifts, each with its recent range. Demo data.</span></figcaption></figure>
+    <figure class="shot sm"><div class="ph"><div class="scr"><div class="safe dim"></div><img src="ov-running.jpg" width="390" height="844" loading="lazy" alt="Running detail screen with demo data: weekly miles against plan and the 2-mile estimate with time trials."></div></div><figcaption><b>Running</b><span>Weekly miles, the 2-mile estimate and planned against actual runs. Demo data.</span></figcaption></figure>
     </div>
-  </div>
+    <div class="dots" id="ovDots" aria-hidden="true"></div>
+  </section>
+
+  <section class="ov-how" aria-labelledby="ov-how-h">
+    <h2 id="ov-how-h">How it works</h2>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><b>Pull the readings</b><span>Sleep, HRV and resting heart rate from the watch, plus logged lifts, runs and food.</span></div>
+      <div class="step"><span class="n">2</span><b>Score against your own normal</b><span>HRV (7-day average), resting heart rate, breathing and wrist temperature are compared with your last three weeks; sleep with a 7.5-hour target; training load with your 4-week average. Then they combine into one daily call.</span></div>
+      <div class="step"><span class="n">3</span><b>Forecast test day</b><span>Your latest runs, lifts and measurements run through the official scoring tables to project your score and its range.</span></div>
+    </div>
+  </section>
 
   <div class="pair">
-    <div class="card"><h3>What it can't tell you</h3><ul>
-      <li>It's not medical advice. Sick or hurt beats any score.</li>
-      <li>A projected score is a forecast, not an official result.</li>
-      <li>Run forecasts months out can miss by minutes. The range shows past misses, not a guarantee.</li>
-    </ul></div>
-    <div class="card"><h3>Built on</h3><ul>
-      <li>One web app for phone and desktop.</li>
-      <li>Apple Health, Strava, Liftosaur and MacroFactor.</li>
-      <li>Private data behind a password.</li>
-      <li>PFRA scoring from DAFMAN 36-2905 (March 2026).</li>
-    </ul></div>
+    <section class="card"><h3>What it can't tell you</h3><ul>
+      <li>Whether you're sick or hurt. It can flag signs that often come with getting sick, but it reads trends, not symptoms, and it isn't medical advice.</li>
+      <li>Your official score. A projected score is a forecast, not a result.</li>
+      <li>How you compare with anyone else. Every score is measured against your own history.</li>
+    </ul></section>
+    <section class="card"><h3>Built on</h3><ul>
+      <li>Apple Health, Strava, Liftosaur and MacroFactor exports</li>
+      <li>USAF PFRA scoring tables (DAFMAN 36-2905, March 2026)</li>
+      <li>A single-file web app. Real data stays private, behind sign-in.</li>
+      <li><b>Shows:</b> joining messy data sources, personalized forecasting, and product design</li>
+    </ul></section>
   </div>
 </div>
 
@@ -131,7 +187,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   </div>
 
   <section class="card msec" id="m-problem"><h3>Problem</h3>
-    <p>The test is one morning; readiness for it takes months, spread across four apps that don't talk. Delta pulls them together to answer two questions: push today, and are you on track?</p>
+    <p>The test is one morning; readiness for it takes months, spread across four apps that don't talk. Delta pulls them together to answer two questions: train as planned or ease off today, and are you on track?</p>
   </section>
 
   <section class="card msec" id="m-inputs"><h3>Inputs and sources</h3>
@@ -152,7 +208,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   </section>
 
   <section class="card msec" id="m-model"><h3>The model</h3>
-    <p><b>Readiness.</b> Each signal is compared with your last 21 days, scored 0–100 and weighted as above. Missing signals drop out. 85+ Ready to push, 70+ Good to go, 55+ Keep it controlled, below that Recover today.</p>
+    <p><b>Readiness.</b> HRV (7-day average), resting heart rate, breathing rate and wrist temperature are compared with your last 21 days; sleep with a 7.5-hour target; training load with your 4-week average. Each is scored 0–100 and weighted as above, and missing signals drop out. 70 and up reads Signals Normal (train as planned), 55 to 69 Signals Below Normal (consider keeping hard efforts controlled), under 55 Signals Well Below Normal (consider an easy day). Wrist temperature and resting heart rate rising together override the score with Possible Illness. The weights are set by hand and not yet tested against how sessions went.</p>
     <p><b>PT score.</b> Cardio 50, waist-to-height 20, strength 15, core 15, scored on the official AFPC chart rows for your age group and sex (effective 1 Mar 26). 75 passes, 90 is Excellent, and any missed minimum fails.</p>
     <p><b>2-mile.</b> A recent time trial wins. Otherwise your best three runs over 1.55 miles are converted with Riegel's formula, then adjusted by how far your runs read from your latest trial (training runs tend to read fast). Test day holds today's estimate: in a backtest over every week of history, holding beat extending the trend at every distance from 2 to 26 weeks. The past-miss range is the middle 80% of those misses at the same distance; on the PT total it moves only the run.</p>
     <p><b>What kind of number.</b> Watch readings and runs are measured. Readiness is a rule of thumb: the weights are set by hand and not yet tested against how sessions went. PT points are an official table lookup. Test-day run time and total are forecasts. Every number on these public pages, including the sample dashboard, is made up.</p>
@@ -224,7 +280,9 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
   <section class="card msec" id="m-validation"><h3>Validation</h3>
     <ul class="chk">
       <li><span class="pill done">Done</span><span>2-mile estimate matches the detailed dashboard on the same data.</span></li>
-      <li><span class="pill plan">Planned</span><span>Test readiness against session results and refit the weights.</span></li>
+      <li><span class="pill done">Done</span><span>Readiness checked against 23 sessions: no link to how sessions went yet, so the score says whether to ease off, never how a session will go.</span></li>
+      <li><span class="pill plan">Planned</span><span>Refit the readiness weights as more sessions are logged.</span></li>
+      <li><span class="pill done">Done</span><span>Range coverage, walk-forward: ranges held about 7 in 10 times at 2 weeks out, 6 in 10 at 4 weeks and about half at 8 to 12 weeks. No range is shown beyond 12 weeks.</span></li>
       <li><span class="pill done">Done</span><span>Every event, age group and sex checked cell by cell against the AFPC chart, with a test that fails if a row drifts.</span></li>
       <li><span class="pill done">Done</span><span>Backtest 2-mile forecasts from every past week against the estimate weeks later, versus simply holding the estimate.</span></li>
       <li><span class="pill done">Done</span><span>Walk-forward check of the range: bands built only from earlier weeks, scored on the weeks that followed.</span></li>
@@ -243,6 +301,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
 
   <section class="card msec" id="m-changelog"><h3>Changelog</h3>
     <ul>
+      <li><span class="mono">2026-11-24</span> Overview rebuilt around the app itself, with phone screenshots taken from the demo; readiness bands renamed to describe the signals (Signals Normal, Below Normal, Well Below Normal, Possible Illness); Method states the readiness and range checks plainly.</li>
       <li><span class="mono">2026-11-23</span> Overview leads with the question and two paths; Method adds the forecast case; the range is named for what it is, the range of past misses.</li>
       <li><span class="mono">2026-11-19</span> Today leads with the call, the signals behind it, and the PT outlook.</li>
       <li><span class="mono">2026-11-20</span> 2-mile forecast holds today's estimate with a tested likely range; run estimates calibrate to your latest trial.</li>
@@ -270,6 +329,11 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
     });
     if (h && h !== "method") { const t = document.getElementById(h); if (t) t.scrollIntoView(); } else scrollTo(0, 0);
   };
+  /* phone strip dots: one per screen, the one nearest the middle is on */
+  const st = document.getElementById("ovStrip"), dots = document.getElementById("ovDots");
+  if (st && dots) { const figs = [...st.querySelectorAll(".shot")]; dots.innerHTML = figs.map(() => "<i></i>").join("");
+    const mark = () => { const c = st.scrollLeft + st.clientWidth / 2; let k = 0, b = 1e9; figs.forEach((f, i) => { const d = Math.abs(f.offsetLeft + f.offsetWidth / 2 - c); if (d < b) { b = d; k = i; } }); [...dots.children].forEach((d, i) => d.classList.toggle("on", i === k)); };
+    st.addEventListener("scroll", () => requestAnimationFrame(mark), { passive: true }); mark(); }
   addEventListener("hashchange", show);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show); else show();
 })();
