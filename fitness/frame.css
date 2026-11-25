@@ -1,5 +1,5 @@
 /* Delta Readiness: the Decision Models frame (hub bar, app header, Overview · Results · Method, footer) in the clean fitness look.
-   Shared by overview.html, the sign-in loader, the signed-in app and demo.html. Theme follows data-theme on <html> (a-theme, light by default). */
+   Shared by overview.html, the sign-in loader, and the signed-in app. Theme follows data-theme on <html> (a-theme, light by default). */
 :root{
   --dz-bg:#F2F4F1; --dz-panel:#FFFFFF; --dz-panel2:#ECEFEA; --dz-ink:#101814; --dz-muted:#56635B; --dz-rule:#DFE4DD;
   --dz-accent:#1F7A45; --dz-on-accent:#FFFFFF; --dz-tan:#56635B; --dz-grid:transparent; --dz-glow:none;
@@ -18,7 +18,7 @@
   --dz-accent:#4FD486; --dz-on-accent:#05140B; --dz-tan:#9BA8A0; --dz-grid:transparent; --dz-glow:none;
   --dz-shadow:none; --dz-bar:rgba(22,28,25,.82); color-scheme:dark}
 
-.dz-hub,.dz-head,.dz-tabbar,.dz-strip,.dz-foot{font-family:var(--dz-body);color:var(--dz-ink);-webkit-text-size-adjust:100%}
+.dz-hub,.dz-head,.dz-tabbar,.dz-foot{font-family:var(--dz-body);color:var(--dz-ink);-webkit-text-size-adjust:100%}
 .dz-in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
 /* hub bar */
@@ -54,11 +54,6 @@
 .dz-tabs a[aria-current="page"]{color:var(--dz-ink);background:var(--dz-panel);box-shadow:var(--dz-shadow)}
 :root[data-theme="dark"] .dz-tabs a[aria-current="page"]{background:var(--dz-panel2)}
 
-/* demo strip */
-.dz-strip{font-size:.86rem}
-.dz-strip .dz-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding-block:0 6px}
-.dz-tag{font:700 .72rem var(--dz-body);color:var(--dz-on-accent);background:var(--dz-accent);padding:3px 10px;border-radius:999px}
-.dz-strip span:not(.dz-tag){color:var(--dz-muted)}
 
 /* footer */
 .dz-foot{margin-top:32px;font-size:.76rem;color:var(--dz-muted)}
@@ -85,10 +80,6 @@ html.dz-app body{background-color:var(--dz-bg)}
   .dz-tile svg{width:20px;height:20px}
   .dz-btn{padding:0 14px;font-size:.82rem}
   .dz-tabs{padding-block:4px}
-  .dz-strip{font-size:.78rem}
-  .dz-strip .dz-in{flex-wrap:nowrap;padding-block:0 4px}
-  .dz-strip span:not(.dz-tag){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .dz-tag{flex:none;font-size:.68rem;padding:2px 8px}
   .dz-tabs a{padding:0 14px;font-size:.84rem}
 }
 
