@@ -196,6 +196,7 @@ a{color:var(--brand)}
     const db = { doc };
     const user = { id: async () => "me", isOwner: () => true, canEdit: () => true, can: () => true };
     window.claude = { use: async n => n === "db" ? db : n === "user" ? user : null };
+    window.__deltaRepo = true;   // saves reach the repo, so Sync Now can start the Sync all workflow
     window.addEventListener("beforeunload", e => { if (Object.keys(pend).length || inflight) { e.preventDefault(); e.returnValue = ""; } });
   }
   start();
